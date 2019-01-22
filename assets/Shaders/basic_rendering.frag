@@ -115,6 +115,8 @@ void main(void)
 {	
 	vec3 normal = normalize(f_normal);
 	
+	vec4 transparency = texture(diffuse_texture, f_texcoord);
+	
 	vec4 diffuseColor = vec4(uniform_diffuse.rgb, 1);
 	// if we provide a texture, multiply color with the color of the texture
 	diffuseColor = mix(diffuseColor, diffuseColor * texture(diffuse_texture, f_texcoord), uniform_has_texture);
@@ -143,6 +145,6 @@ void main(void)
 	float specularNormalization = (uniform_shininess + 8) / (8 * PI);
 	vec3 specularReflection = (NdotL > 0.0)? irradiance * specularNormalization * uniform_specular * pow( NdotH, uniform_shininess + 0.001) : vec3(0);
 	
-	out_color = vec4( diffuseReflection + specularReflection, 1.0);	
+	out_color = vec4( diffuseReflection.rgb + specularReflection.rgb, transparency.a);
 }
 

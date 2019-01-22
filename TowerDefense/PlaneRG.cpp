@@ -17,6 +17,7 @@ PlaneRG::PlaneRG()
 {
 	m_plane_g = new GeometryNode();
 	m_plane_r = new GeometryNode();
+	curr_plane = m_plane_g;
 	m_plane_r->Init(m_plane_r_mesh);
 	m_plane_g->Init(m_plane_g_mesh);
 }
@@ -37,17 +38,16 @@ void PlaneRG::SetPosition(glm::vec3 position)
 void PlaneRG::Update(Game* game)
 {
 	SetPosition(pos);
-	
 }
 
 void PlaneRG::DrawGeometry(Renderer* renderer)
 {
-	renderer->DrawGeometryNode(m_plane_g, m_transformation_matrix, m_transformation_matrix_normal);
+	renderer->DrawGeometryNode(curr_plane, m_transformation_matrix, m_transformation_matrix_normal);
 }
 
 void PlaneRG::DrawGeometryToShadowMap(Renderer* renderer)
 {
-	renderer->DrawGeometryNodeToShadowMap(m_plane_g, m_transformation_matrix, m_transformation_matrix_normal);
+	renderer->DrawGeometryNodeToShadowMap(curr_plane, m_transformation_matrix, m_transformation_matrix_normal);
 }
 
 void PlaneRG::moveUp()

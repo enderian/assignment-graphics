@@ -11,6 +11,7 @@ private:
 
 	class GeometryNode* m_plane_r;
 	class GeometryNode* m_plane_g;
+	class GeometryNode* curr_plane;
 	glm::mat4 m_transformation_matrix;
 	glm::mat4 m_transformation_matrix_normal;
 

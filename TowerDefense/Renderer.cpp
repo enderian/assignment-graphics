@@ -6,6 +6,7 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "OBJLoader.h"
+#include "TextureManager.h"
 
 // RENDERER
 Renderer::Renderer()
@@ -106,6 +107,9 @@ bool Renderer::InitCommonItems()
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+	m_texture_green = TextureManager::GetInstance().RequestTexture("../assets/Various/maps/green.png", true);
+	m_texture_red = TextureManager::GetInstance().RequestTexture("../assets/Various/maps/red.png", true);
 
 	glBindVertexArray(0);
 
@@ -375,6 +379,9 @@ void Renderer::RenderGeometry(Renderable* renderable)
 	glUniform1i(m_geometry_rendering_program["uniform_diffuse_texture"], 0);
 	glActiveTexture(GL_TEXTURE0);
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	//Draw all the geometries passed
 	renderable->DrawGeometry(this);
 
@@ -386,6 +393,7 @@ void Renderer::RenderGeometry(Renderable* renderable)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glPointSize(1.0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 }
 
 void Renderer::DrawGeometryNode(GeometryNode* node, glm::mat4 model_matrix, glm::mat4 normal_matrix)

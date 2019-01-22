@@ -1,12 +1,17 @@
 #include "SDL2/SDL.h"
 #include <iostream>
 #include <chrono>
+#include <Windows.h>
 #include "GLEW\glew.h"
 #include "Renderer.h"
 #include "Game.h"
 #include "PlaneRG.h"
 
 using namespace std;
+
+extern "C" {
+	_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+}
 
 //Screen attributes
 SDL_Window * window;
