@@ -36,6 +36,12 @@ const glm::vec3 game_tiles[] = {
 	glm::vec3(6, 0, 0)
 };
 
+const glm::vec3 treasure_locs[] = {
+	glm::vec3(5, 0, -.5),
+	glm::vec3(6, 0, -.5),
+	glm::vec3(7, 0, -.5)
+};
+
 class Game: public Renderable
 {
 private:
@@ -48,6 +54,7 @@ private:
 
 	std::vector<class Pirate*> m_pirates;
 	std::vector<class Road*> m_roads;
+	std::vector<class Treasure*> m_treasures;
 public:
 	Game();
 	~Game();
