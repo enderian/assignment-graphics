@@ -13,9 +13,7 @@ Renderer::Renderer()
 	m_vbo_fbo_vertices = 0;
 	m_vao_fbo = 0;
 	
-	m_geometric_object1 = nullptr;
-	m_geometric_object2 = nullptr;
-	m_geometric_object3 = nullptr;
+	m_tower_object = nullptr;
 
 	m_fbo = 0;
 	m_fbo_texture = 0;
@@ -24,7 +22,7 @@ Renderer::Renderer()
 	m_continous_time = 0.0;
 
 	// initialize the camera parameters
-	m_camera_position = glm::vec3(1, 3, -6);
+	m_camera_position = glm::vec3(0, 10, 10);
 	m_camera_target_position = glm::vec3(0, 0, 0);
 	m_camera_up_vector = glm::vec3(0, 1, 0);
 }
@@ -39,9 +37,7 @@ Renderer::~Renderer()
 	glDeleteVertexArrays(1, &m_vao_fbo);
 	glDeleteBuffers(1, &m_vbo_fbo_vertices);
 
-	delete m_geometric_object1;
-	delete m_geometric_object2;
-	delete m_geometric_object3;
+	delete m_tower_object;
 }
 
 bool Renderer::Init(int SCREEN_WIDTH, int SCREEN_HEIGHT)
@@ -80,55 +76,16 @@ bool Renderer::Init(int SCREEN_WIDTH, int SCREEN_HEIGHT)
 		return false;
 	}
 
-	//If everything initialized
-	return techniques_initialization && items_initialization && buffers_initialization && meshes_initialization && lights_sources_initialization;
-}
-
-void Renderer::Update(float dt)
-{
-	float movement_speed = 2.0f;
-	// compute the direction of the camera
-	glm::vec3 direction = glm::normalize(m_camera_target_position - m_camera_position);
-
-	// move the camera towards the direction of the camera
-	m_camera_position += m_camera_movement.x *  movement_speed * direction * dt;
-	m_camera_target_position += m_camera_movement.x * movement_speed * direction * dt;
-
-	// move the camera sideways
-	glm::vec3 right = glm::normalize(glm::cross(direction, m_camera_up_vector));
-	m_camera_position += m_camera_movement.y *  movement_speed * right * dt;
-	m_camera_target_position += m_camera_movement.y * movement_speed * right * dt;
-
-	glm::mat4 rotation = glm::mat4(1.0f);
-	float angular_speed = glm::pi<float>() * 0.0025f;
-	
-	// compute the rotation of the camera based on the mouse movement
-	rotation *= glm::rotate(glm::mat4(1.0), m_camera_look_angle_destination.y * angular_speed, right);
-	rotation *= glm::rotate(glm::mat4(1.0), -m_camera_look_angle_destination.x  * angular_speed, m_camera_up_vector);
-	m_camera_look_angle_destination = glm::vec2(0);
-	
-	// rotate the camera direction
-	direction = rotation * glm::vec4(direction, 0);
-	float dist = glm::distance(m_camera_position, m_camera_target_position);
-	m_camera_target_position = m_camera_position + direction * dist;
+	m_camera_up_vector = glm::vec3(0, 1, 0);
+	m_camera_position = glm::vec3(0.720552, 18.1377, -11.3135);
+	m_camera_target_position += glm::vec3(4.005, 12.634, -5.66336);
 
 	// compute the view matrix
 	m_view_matrix = glm::lookAt(m_camera_position, m_camera_target_position, m_camera_up_vector);
+	m_camera_look_angle_destination = glm::vec2(0);
 
-	m_continous_time += dt;
-
-	// update meshes tranformations
-	m_geometric_object1_transformation_matrix = glm::scale(glm::mat4(1.f), glm::vec3(0.25f));
-	m_geometric_object1_transformation_normal_matrix = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_geometric_object1_transformation_matrix))));
-
-	glm::mat4 object_translation = glm::translate(glm::mat4(1.0), glm::vec3(2, 5, 0));
-	glm::mat4 object_rotation = glm::rotate(glm::mat4(1.0), 1.5f*m_continous_time, glm::vec3(0, 1, 0));
-	glm::mat4 object_scale = glm::scale(glm::mat4(1.0), glm::vec3(0.8f));
-	m_geometric_object2_transformation_matrix = glm::translate(glm::mat4(1.0), glm::vec3(-4, 2, -2)) * object_translation * object_rotation * object_scale;
-	m_geometric_object2_transformation_normal_matrix = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_geometric_object2_transformation_matrix))));
-
-	m_geometric_object3_transformation_matrix = glm::translate(glm::mat4(1.f), glm::vec3(0, 1, 0)) * glm::rotate(glm::mat4(1.f), glm::radians(10.f), glm::vec3(0,0,1)) * glm::scale(glm::mat4(1.0), glm::vec3(0.07f));
-	m_geometric_object3_transformation_normal_matrix = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_geometric_object3_transformation_matrix))));
+	//If everything initialized
+	return techniques_initialization && items_initialization && buffers_initialization && meshes_initialization && lights_sources_initialization;
 }
 
 bool Renderer::InitCommonItems()
@@ -160,8 +117,8 @@ bool Renderer::InitRenderingTechniques()
 	bool initialized = true;
 
 	// Geometry Rendering Program
-	std::string vertex_shader_path = "../Data/Shaders/basic_rendering.vert";
-	std::string fragment_shader_path = "../Data/Shaders/basic_rendering.frag";
+	std::string vertex_shader_path = "../assets/Shaders/basic_rendering.vert";
+	std::string fragment_shader_path = "../assets/Shaders/basic_rendering.frag";
 	m_geometry_rendering_program.LoadVertexShaderFromFile(vertex_shader_path.c_str());
 	m_geometry_rendering_program.LoadFragmentShaderFromFile(fragment_shader_path.c_str());
 	initialized = m_geometry_rendering_program.CreateProgram();
@@ -187,8 +144,8 @@ bool Renderer::InitRenderingTechniques()
 	m_geometry_rendering_program.LoadUniform("shadowmap_texture");
 
 	// Post Processing Program
-	vertex_shader_path = "../Data/Shaders/postproc.vert";
-	fragment_shader_path = "../Data/Shaders/postproc.frag";
+	vertex_shader_path = "../assets/Shaders/postproc.vert";
+	fragment_shader_path = "../assets/Shaders/postproc.frag";
 	m_postprocess_program.LoadVertexShaderFromFile(vertex_shader_path.c_str());
 	m_postprocess_program.LoadFragmentShaderFromFile(fragment_shader_path.c_str());
 	initialized = initialized && m_postprocess_program.CreateProgram();
@@ -198,8 +155,8 @@ bool Renderer::InitRenderingTechniques()
 	m_postprocess_program.LoadUniform("uniform_projection_inverse_matrix");
 
 	// Shadow mapping Program
-	vertex_shader_path = "../Data/Shaders/shadow_map_rendering.vert";
-	fragment_shader_path = "../Data/Shaders/shadow_map_rendering.frag";
+	vertex_shader_path = "../assets/Shaders/shadow_map_rendering.vert";
+	fragment_shader_path = "../assets/Shaders/shadow_map_rendering.frag";
 	m_spot_light_shadow_map_program.LoadVertexShaderFromFile(vertex_shader_path.c_str());
 	m_spot_light_shadow_map_program.LoadFragmentShaderFromFile(fragment_shader_path.c_str());
 	initialized = initialized && m_spot_light_shadow_map_program.CreateProgram();
@@ -278,11 +235,11 @@ bool Renderer::ResizeBuffers(int width, int height)
 bool Renderer::InitLightSources()
 {
 	// Initialize the spot light
-	m_spotlight_node.SetPosition(glm::vec3(8, 14, -3));
-	m_spotlight_node.SetTarget(glm::vec3(0, 4, 0));
+	m_spotlight_node.SetPosition(glm::vec3(16, 30, 16));
+	m_spotlight_node.SetTarget(glm::vec3(16.4, 0, 16));
 	m_spotlight_node.SetColor(40.0f * glm::vec3(255, 255, 251) / 255.f);
-	m_spotlight_node.SetConeSize(50, 70);
-	m_spotlight_node.CastShadow(true);
+	m_spotlight_node.SetConeSize(73, 80);
+	m_spotlight_node.CastShadow(false);
 
 	return true;
 }
@@ -293,31 +250,11 @@ bool Renderer::InitGeometricMeshes()
 	bool initialized = true;
 	OBJLoader loader;
 	// load geometric object 1
-	auto mesh = loader.load("../Data/Knossos/knossos.obj");
+	auto mesh = loader.load("../assets/Pirate/pirate_body.obj");
 	if (mesh != nullptr)
 	{
-		m_geometric_object1 = new GeometryNode();
-		m_geometric_object1->Init(mesh);
-	}
-	else
-		initialized = false;
-
-	// load geometric object 2
-	mesh = loader.load("../Data/Pirates/weight.obj");
-	if (mesh != nullptr)
-	{
-		m_geometric_object2 = new GeometryNode();
-		m_geometric_object2->Init(mesh);
-	}
-	else
-		initialized = false;
-
-	// load geometric object 3
-	mesh = loader.load("../Data/Pirates/skeleton.obj");
-	if (mesh != nullptr)
-	{
-		m_geometric_object3 = new GeometryNode();
-		m_geometric_object3->Init(mesh);
+		m_tower_object = new GeometryNode();
+		m_tower_object->Init(mesh);
 	}
 	else
 		initialized = false;
@@ -331,16 +268,10 @@ void Renderer::SetRenderingMode(RENDERING_MODE mode)
 }
 
 // Render the Scene
-void Renderer::Render()
+void Renderer::PostRender()
 {
-	// Draw the geometry to the shadow maps
-	RenderShadowMaps();
-
-	// Draw the geometry
-	RenderGeometry();
-
 	// Render to screen
-	RenderToOutFB();
+	RenderToOuterRenderBuffer();
 
 	GLenum error = Tools::CheckGLError();
 	if (error != GL_NO_ERROR)
@@ -350,7 +281,7 @@ void Renderer::Render()
 	}
 }
 
-void Renderer::RenderShadowMaps()
+void Renderer::RenderShadowMaps(Renderable* renderable)
 {
 	// if the light source casts shadows
 	if (m_spotlight_node.GetCastShadowsStatus())
@@ -374,14 +305,8 @@ void Renderer::RenderShadowMaps()
 		glUniformMatrix4fv(m_spot_light_shadow_map_program["uniform_projection_matrix"], 1, GL_FALSE, glm::value_ptr(m_spotlight_node.GetProjectionMatrix()));
 		glUniformMatrix4fv(m_spot_light_shadow_map_program["uniform_view_matrix"], 1, GL_FALSE, glm::value_ptr(m_spotlight_node.GetViewMatrix()));
 
-		// draw the first object
-		DrawGeometryNodeToShadowMap(m_geometric_object1, m_geometric_object1_transformation_matrix, m_geometric_object1_transformation_normal_matrix);
-
-		// draw the second object
-		DrawGeometryNodeToShadowMap(m_geometric_object2, m_geometric_object2_transformation_matrix, m_geometric_object2_transformation_normal_matrix);
-
-		// draw the third object
-		DrawGeometryNodeToShadowMap(m_geometric_object3, m_geometric_object3_transformation_matrix, m_geometric_object3_transformation_normal_matrix);
+		//Draw all the geometries passed
+		renderable->DrawGeometryToShadowMap(this);
 		
 		glBindVertexArray(0);
 
@@ -394,7 +319,7 @@ void Renderer::RenderShadowMaps()
 }
 
 
-void Renderer::RenderGeometry()
+void Renderer::RenderGeometry(Renderable* renderable)
 {
 	// Bind the Intermediate framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
@@ -450,14 +375,8 @@ void Renderer::RenderGeometry()
 	glUniform1i(m_geometry_rendering_program["uniform_diffuse_texture"], 0);
 	glActiveTexture(GL_TEXTURE0);
 
-	// draw the first object
-	DrawGeometryNode(m_geometric_object1, m_geometric_object1_transformation_matrix, m_geometric_object1_transformation_normal_matrix);
-
-	// draw the second object
-	DrawGeometryNode(m_geometric_object2, m_geometric_object2_transformation_matrix, m_geometric_object2_transformation_normal_matrix);
-
-	// draw the third object
-	DrawGeometryNode(m_geometric_object3, m_geometric_object3_transformation_matrix, m_geometric_object3_transformation_normal_matrix);
+	//Draw all the geometries passed
+	renderable->DrawGeometry(this);
 
 	glBindVertexArray(0);
 	m_geometry_rendering_program.Unbind();
@@ -499,7 +418,7 @@ void Renderer::DrawGeometryNodeToShadowMap(GeometryNode* node, glm::mat4 model_m
 	}
 }
 
-void Renderer::RenderToOutFB()
+void Renderer::RenderToOuterRenderBuffer()
 {
 	// Bind the default framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

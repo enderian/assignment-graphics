@@ -3,7 +3,6 @@
 
 #include <vector>
 #include "GLEW\glew.h"
-#include <unordered_map>
 #include "glm\gtx\hash.hpp"
 
 class GeometryNode

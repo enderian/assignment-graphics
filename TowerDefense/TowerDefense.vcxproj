@@ -19,21 +19,27 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GeometricMesh.cpp" />
     <ClCompile Include="GeometryNode.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
+    <ClCompile Include="Pirate.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Road.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="SpotlightNode.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Tools.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game.h" />
     <ClInclude Include="GeometricMesh.h" />
     <ClInclude Include="GeometryNode.h" />
     <ClInclude Include="OBJLoader.h" />
+    <ClInclude Include="Pirate.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Road.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="SpotlightNode.h" />
     <ClInclude Include="TextureManager.h" />

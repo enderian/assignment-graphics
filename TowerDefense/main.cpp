@@ -3,6 +3,7 @@
 #include <chrono>
 #include "GLEW\glew.h"
 #include "Renderer.h"
+#include "Game.h"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ const int SCREEN_HEIGHT = 1024;	//600;	//480;
 //Event handler
 SDL_Event event;
 
-Renderer * renderer = nullptr;
+Game * game = nullptr;
 
 void func()
 {
@@ -71,8 +72,9 @@ bool init()
 	// some versions of glew may cause an opengl error in initialization
 	glGetError();
 
-	renderer = new Renderer();
-	bool engine_initialized = renderer->Init(SCREEN_WIDTH, SCREEN_HEIGHT);
+	game = new Game();
+	bool engine_initialized = game->InitializeRenderer(SCREEN_WIDTH, SCREEN_HEIGHT);
+	engine_initialized |= game->InitializeObjects();
 
 	//atexit(func);
 	
@@ -82,7 +84,7 @@ bool init()
 
 void clean_up()
 {
-	delete renderer;
+	delete game;
 
 	SDL_GL_DeleteContext(gContext);
 	SDL_DestroyWindow(window);
@@ -119,44 +121,44 @@ int main(int argc, char *argv[])
 			{
 				// Key down events
 				if (event.key.keysym.sym == SDLK_ESCAPE) quit = true;
-				else if (event.key.keysym.sym == SDLK_r) renderer->ReloadShaders();
-				else if (event.key.keysym.sym == SDLK_t) renderer->SetRenderingMode(Renderer::RENDERING_MODE::TRIANGLES);
-				else if (event.key.keysym.sym == SDLK_l) renderer->SetRenderingMode(Renderer::RENDERING_MODE::LINES);
-				else if (event.key.keysym.sym == SDLK_p) renderer->SetRenderingMode(Renderer::RENDERING_MODE::POINTS);
+				else if (event.key.keysym.sym == SDLK_r) game->renderer()->ReloadShaders();
+				else if (event.key.keysym.sym == SDLK_t) game->renderer()->SetRenderingMode(Renderer::RENDERING_MODE::TRIANGLES);
+				else if (event.key.keysym.sym == SDLK_l) game->renderer()->SetRenderingMode(Renderer::RENDERING_MODE::LINES);
+				else if (event.key.keysym.sym == SDLK_p) game->renderer()->SetRenderingMode(Renderer::RENDERING_MODE::POINTS);
 				else if (event.key.keysym.sym == SDLK_w || event.key.keysym.sym == SDLK_UP)
 				{
-					renderer->CameraMoveForward(true);
+					game->renderer()->CameraMoveForward(true);
 				}
 				else if (event.key.keysym.sym == SDLK_s || event.key.keysym.sym == SDLK_DOWN)
 				{
-					renderer->CameraMoveBackWard(true);
+					game->renderer()->CameraMoveBackWard(true);
 				}	
 				else if (event.key.keysym.sym == SDLK_a || event.key.keysym.sym == SDLK_LEFT)
 				{
-					renderer->CameraMoveLeft(true);
+					game->renderer()->CameraMoveLeft(true);
 				}
 				else if (event.key.keysym.sym == SDLK_d || event.key.keysym.sym == SDLK_RIGHT)
 				{
-					renderer->CameraMoveRight(true);
+					game->renderer()->CameraMoveRight(true);
 				}
 			}
 			else if (event.type == SDL_KEYUP)
 			{
 				if (event.key.keysym.sym == SDLK_w || event.key.keysym.sym == SDLK_UP)
 				{
-					renderer->CameraMoveForward(false);
+					game->renderer()->CameraMoveForward(false);
 				}
 				else if (event.key.keysym.sym == SDLK_s || event.key.keysym.sym == SDLK_DOWN)
 				{
-					renderer->CameraMoveBackWard(false);
+					game->renderer()->CameraMoveBackWard(false);
 				}
 				else if (event.key.keysym.sym == SDLK_a || event.key.keysym.sym == SDLK_LEFT)
 				{
-					renderer->CameraMoveLeft(false);
+					game->renderer()->CameraMoveLeft(false);
 				}
 				else if (event.key.keysym.sym == SDLK_d || event.key.keysym.sym == SDLK_RIGHT)
 				{
-					renderer->CameraMoveRight(false);
+					game->renderer()->CameraMoveRight(false);
 				}
 			}
 			else if (event.type == SDL_MOUSEMOTION)
@@ -165,7 +167,7 @@ int main(int argc, char *argv[])
 				int y = event.motion.y;
 				if (mouse_button_pressed)
 				{
-					renderer->CameraLook(glm::vec2(x, y) - prev_mouse_position);
+					game->renderer()->CameraLook(glm::vec2(x, y) - prev_mouse_position);
 					prev_mouse_position = glm::vec2(x, y);
 				}
 			}
@@ -188,7 +190,7 @@ int main(int argc, char *argv[])
 			{
 				if (event.window.event == SDL_WINDOWEVENT_RESIZED)
 				{
-					renderer->ResizeBuffers(event.window.data1, event.window.data2);
+					game->renderer()->ResizeBuffers(event.window.data1, event.window.data2);
 				}
 			}
 		}
@@ -199,10 +201,8 @@ int main(int argc, char *argv[])
 		simulation_start = chrono::steady_clock::now();
 
 		// Update
-		renderer->Update(dt);
-
-		// Draw
-		renderer->Render();
+		game->Update(dt);
+		game->Render();
 		
 		//Update screen (swap buffer for double buffering)
 		SDL_GL_SwapWindow(window);
