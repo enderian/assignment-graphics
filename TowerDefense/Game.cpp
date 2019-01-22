@@ -4,6 +4,7 @@
 #include "Road.h"
 #include "Treasure.h"
 #include "PlaneRG.h"
+#include "Tower.h"
 #include "OBJLoader.h"
 #include <glm/gtc/matrix_transform.inl>
 #include <SDL2/SDL.h>
@@ -31,6 +32,7 @@ bool Game::InitializeObjects()
 	Road::InitializeMeshes();
 	Treasure::InitializeMeshes();
 	PlaneRG::InitializeMeshes();
+	Tower::InitializeMeshes();
 
 	OBJLoader loader;
 	m_terrain = new GeometryNode();
@@ -45,8 +47,13 @@ bool Game::InitializeObjects()
 	//Create an empty pirate vector.
 	this->m_pirates = std::vector<class Pirate*>();
 
-	/*auto pirate = new Pirate(time());
-	this->m_pirates.push_back(pirate);*/
+	this->m_towers = std::vector<class Tower*>();
+
+	for(int i = 0; i < 3; i++)
+	{
+		auto tower = new Tower();
+		this->m_towers.push_back(tower);
+	}
 
 	for (auto pos : game_tiles)
 	{
@@ -92,6 +99,10 @@ void Game::Update(float elapsed)
 	{
 		pirate->Update(this);
 	}
+	/*for (auto tower : m_towers)
+	{
+		tower->Update(this);
+	}*/
 	plane_rg->Update(this);
 }
 
@@ -110,13 +121,11 @@ void Game::DrawGeometry(Renderer* renderer)
 	{
 		treasure->DrawGeometry(renderer);
 	}
+	for (auto tower : m_towers)
+	{
+		if(tower->IsUsed()) tower->DrawGeometry(renderer);
+	}
 	plane_rg->DrawGeometry(renderer);
-}
-
-void Game::SpawnPirate(float dt)
-{
-	auto pirate = new Pirate(dt);
-	this->m_pirates.push_back(pirate);
 }
 
 void Game::DrawGeometryToShadowMap(Renderer* renderer)
@@ -134,5 +143,47 @@ void Game::DrawGeometryToShadowMap(Renderer* renderer)
 	{
 		treasure->DrawGeometryToShadowMap(renderer);
 	}
+	for (auto tower : m_towers)
+	{
+		if (tower->IsUsed()) tower->DrawGeometryToShadowMap(renderer);
+	}
 	plane_rg->DrawGeometryToShadowMap(renderer);
+}
+
+void Game::SpawnPirate(float dt)
+{
+	auto pirate = new Pirate(dt);
+	this->m_pirates.push_back(pirate);
+}
+
+void Game::DeployTower(glm::vec3 pos)
+{
+	for (Tower* t : m_towers)
+	{
+		if(!t->IsUsed())
+		{
+			t->SetPosition(pos);
+			t->setPos(pos);
+			t->setUsed(true);
+			break;
+		}
+	}
+}
+
+void Game::RemoveTower(glm::vec3 pos)
+{
+	for (Tower* t: m_towers)
+	{
+		if(pos.x == t->GetPos().x && pos.z == t->GetPos().z && t->IsUsed())
+		{
+			t->setPos(glm::vec3(-1));
+			t->setUsed(false);
+		}
+	}
+}
+
+
+std::vector<Tower*> Game::GetTowers()
+{
+	return this->m_towers;
 }

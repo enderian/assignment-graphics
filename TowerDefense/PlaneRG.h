@@ -32,6 +32,8 @@ public:
 	void moveDown();
 	void moveLeft();
 	void moveRight();
+
+	glm::vec4 getPos();
 };
 
 #endif

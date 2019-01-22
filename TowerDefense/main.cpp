@@ -130,29 +130,38 @@ int main(int argc, char *argv[])
 			{
 				// Key down events
 				if (event.key.keysym.sym == SDLK_ESCAPE) quit = true;
-				else if (event.key.keysym.sym == SDLK_r) game->renderer()->ReloadShaders();
-				else if (event.key.keysym.sym == SDLK_t) game->renderer()->SetRenderingMode(Renderer::RENDERING_MODE::TRIANGLES);
+				//else if (event.key.keysym.sym == SDLK_r) game->renderer()->ReloadShaders();
+				//else if (event.key.keysym.sym == SDLK_t) game->renderer()->SetRenderingMode(Renderer::RENDERING_MODE::TRIANGLES);
 				else if (event.key.keysym.sym == SDLK_l) game->renderer()->SetRenderingMode(Renderer::RENDERING_MODE::LINES);
 				else if (event.key.keysym.sym == SDLK_p) game->renderer()->SetRenderingMode(Renderer::RENDERING_MODE::POINTS);
-				else if (event.key.keysym.sym == SDLK_w || event.key.keysym.sym == SDLK_UP)
+				else if (event.key.keysym.sym == SDLK_UP)
 				{
-					game->renderer()->CameraMoveForward(true);
 					game->getPlaneRG()->moveUp();
 				}
-				else if (event.key.keysym.sym == SDLK_s || event.key.keysym.sym == SDLK_DOWN)
+				else if (event.key.keysym.sym == SDLK_DOWN)
 				{
-					game->renderer()->CameraMoveBackWard(true);
 					game->getPlaneRG()->moveDown();
 				}	
-				else if (event.key.keysym.sym == SDLK_a || event.key.keysym.sym == SDLK_LEFT)
+				else if (event.key.keysym.sym == SDLK_LEFT)
 				{
-					game->renderer()->CameraMoveLeft(true);
 					game->getPlaneRG()->moveLeft();
 				}
-				else if (event.key.keysym.sym == SDLK_d || event.key.keysym.sym == SDLK_RIGHT)
+				else if (event.key.keysym.sym == SDLK_RIGHT)
 				{
-					game->renderer()->CameraMoveRight(true);
 					game->getPlaneRG()->moveRight();
+				}
+				else if (event.key.keysym.sym == SDLK_r)
+				{
+					glm::vec4 place = game->getPlaneRG()->getPos();
+					game->RemoveTower(glm::vec3(place.x, place.y, place.z));
+				}
+				else if (event.key.keysym.sym == SDLK_t)
+				{
+					glm::vec4 place = game->getPlaneRG()->getPos();
+					if(place.w)
+					{
+						game->DeployTower(glm::vec3(place.x, place.y, place.z));
+					}
 				}
 			}
 			else if (event.type == SDL_KEYUP)

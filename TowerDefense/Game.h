@@ -58,6 +58,7 @@ private:
 	std::vector<class Pirate*> m_pirates;
 	std::vector<class Road*> m_roads;
 	std::vector<class Treasure*> m_treasures;
+	std::vector<class Tower*> m_towers;
 
 public:
 	Game();
@@ -85,9 +86,13 @@ public:
 	void Update(float elapsed);
 	void Render();
 	void SpawnPirate(float dt);
+	void DeployTower(glm::vec3 pos);
+	void RemoveTower(glm::vec3 pos);
 
 	void DrawGeometry(Renderer* renderer) override;
 	void DrawGeometryToShadowMap(Renderer* renderer) override;
+
+	std::vector<Tower*> GetTowers();
 };
 
 class GameObject : public Renderable

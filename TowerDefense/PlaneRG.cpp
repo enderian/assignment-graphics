@@ -1,6 +1,7 @@
 #include "PlaneRG.h"
 #include <glm/gtc/matrix_transform.inl>
 #include "OBJLoader.h"
+#include "Tower.h"
 
 GeometricMesh* m_plane_r_mesh;
 GeometricMesh* m_plane_g_mesh;
@@ -38,6 +39,25 @@ void PlaneRG::SetPosition(glm::vec3 position)
 void PlaneRG::Update(Game* game)
 {
 	SetPosition(pos);
+	for (glm::vec3 i : game_tiles)
+	{
+		if(i.x == pos.x && i.z == pos.z)
+		{
+			curr_plane = m_plane_r;
+			break;
+		}
+		else curr_plane = m_plane_g;
+	}
+	std::vector<Tower*> towers = game->GetTowers();
+	for (auto t : towers)
+	{
+		if(t->GetPos().x == pos.x && t->GetPos().z == pos.z)
+		{
+			curr_plane = m_plane_r;
+			break;
+		}
+		else curr_plane = m_plane_g;
+	}
 }
 
 void PlaneRG::DrawGeometry(Renderer* renderer)
@@ -68,6 +88,11 @@ void PlaneRG::moveLeft()
 void PlaneRG::moveRight()
 {
 	(pos.x > 0) ? pos.x -= 1 : 0;
+}
+
+glm::vec4 PlaneRG::getPos()
+{
+	return glm::vec4(pos.x, pos.y, pos.z, (curr_plane == m_plane_g) ? 1 : 0);
 }
 
 

@@ -31,7 +31,10 @@ void Tower::SetPosition(glm::vec3 position)
 
 void Tower::Update(Game* game)
 {
-	
+	if(used)
+	{
+		
+	}
 }
 
 void Tower::DrawGeometry(Renderer* renderer)
@@ -44,6 +47,22 @@ void Tower::DrawGeometryToShadowMap(Renderer* renderer)
 	renderer->DrawGeometryNodeToShadowMap(m_tower, m_transformation_matrix, m_transformation_matrix_normal);
 }
 
+void Tower::setPos(glm::vec3 pos)
+{
+	this->pos = pos;
+}
 
+void Tower::setUsed(bool used)
+{
+	this->used = used;
+}
 
+bool Tower::IsUsed()
+{
+	return this->used;
+}
 
+glm::vec3 Tower::GetPos()
+{
+	return pos;
+}
