@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "Pirate.h"
 #include "Road.h"
+#include "Treasure.h"
 #include "OBJLoader.h"
 #include <glm/gtc/matrix_transform.inl>
 
@@ -25,6 +26,7 @@ bool Game::InitializeObjects()
 	//Initialize the meshes into memory.
 	Pirate::InitializeMeshes();
 	Road::InitializeMeshes();
+	Treasure::InitializeMeshes();
 
 	OBJLoader loader;
 	m_terrain = new GeometryNode();
@@ -47,6 +49,15 @@ bool Game::InitializeObjects()
 		auto road = new Road();
 		road->SetPosition(pos);
 		this->m_roads.push_back(road);
+	}
+
+	this->m_treasures = std::vector<class Treasure*>();
+
+	for (auto tr_pos : treasure_locs)
+	{
+		auto treasure = new Treasure();
+		treasure->SetPosition(tr_pos);
+		this->m_treasures.push_back(treasure);
 	}
 
 	return true;
@@ -86,6 +97,10 @@ void Game::DrawGeometry(Renderer* renderer)
 	{
 		road->DrawGeometry(renderer);
 	}
+	for (auto treasure : m_treasures)
+	{
+		treasure->DrawGeometry(renderer);
+	}
 }
 
 void Game::DrawGeometryToShadowMap(Renderer* renderer)
@@ -98,5 +113,9 @@ void Game::DrawGeometryToShadowMap(Renderer* renderer)
 	for (auto road : m_roads)
 	{
 		road->DrawGeometryToShadowMap(renderer);
+	}
+	for (auto treasure : m_treasures)
+	{
+		treasure->DrawGeometryToShadowMap(renderer);
 	}
 }
