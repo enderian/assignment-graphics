@@ -51,6 +51,12 @@
     <ClCompile Include="Road.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Treasure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OBJLoader.h">
@@ -84,6 +90,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Road.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Treasure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tower.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

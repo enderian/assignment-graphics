@@ -31,6 +31,8 @@
     <ClCompile Include="SpotlightNode.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Tools.cpp" />
+    <ClCompile Include="Tower.cpp" />
+    <ClCompile Include="Treasure.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
@@ -44,6 +46,8 @@
     <ClInclude Include="SpotlightNode.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Tools.h" />
+    <ClInclude Include="Tower.h" />
+    <ClInclude Include="Treasure.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
