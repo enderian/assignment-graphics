@@ -1,22 +1,24 @@
-#ifndef TREASURE_H
-#define TREASURE_H
+#ifndef PLANERG_H
+#define PLANERG_H
 
 #include "GeometryNode.h"
 #include "Renderer.h"
 #include "Game.h"
 
-class Treasure : public GameObject
+class PlaneRG : public GameObject
 {
 private:
-	
-	class GeometryNode* m_treasure;
+
+	class GeometryNode* m_plane_r;
+	class GeometryNode* m_plane_g;
 	glm::mat4 m_transformation_matrix;
 	glm::mat4 m_transformation_matrix_normal;
 
 public:
-	int coins = 100;
-	Treasure();
-	virtual ~Treasure();
+	glm::vec3 pos = glm::vec3(4, 0, 4);
+
+	PlaneRG();
+	virtual ~PlaneRG();
 
 	static bool InitializeMeshes();
 
@@ -25,7 +27,10 @@ public:
 	void DrawGeometry(class Renderer* renderer) override;
 	void DrawGeometryToShadowMap(class Renderer* renderer) override;
 
+	void moveUp();
+	void moveDown();
+	void moveLeft();
+	void moveRight();
 };
-
 
 #endif

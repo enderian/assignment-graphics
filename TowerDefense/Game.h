@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <vector>
+#include <SDL2/SDL.h>
 #define TOTAL_GAME_TIMES = 29;
 
 const glm::vec3 game_tiles[] = {
@@ -45,9 +46,11 @@ const glm::vec3 treasure_locs[] = {
 class Game: public Renderable
 {
 private:
+	SDL_Event event;
+
 	float m_time = 0.0f;
 	class Renderer* m_renderer;
-
+	class PlaneRG* plane_rg;
 	class GeometryNode* m_terrain;
 	glm::mat4 m_terrain_transformation_matrix;
 	glm::mat4 m_terrain_transformation_matrix_normal;
@@ -55,6 +58,7 @@ private:
 	std::vector<class Pirate*> m_pirates;
 	std::vector<class Road*> m_roads;
 	std::vector<class Treasure*> m_treasures;
+
 public:
 	Game();
 	~Game();
@@ -69,12 +73,18 @@ public:
 		return m_renderer;
 	}
 
+	PlaneRG* getPlaneRG()
+	{
+		return plane_rg;
+	}
+
 	bool InitializeRenderer(int SCREEN_WIDTH, int SCREEN_HEIGHT);
 	bool InitializeObjects();
 	bool InitializeLogic();
 
 	void Update(float elapsed);
 	void Render();
+	void SDLEvent();
 
 	void DrawGeometry(Renderer* renderer) override;
 	void DrawGeometryToShadowMap(Renderer* renderer) override;

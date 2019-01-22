@@ -25,6 +25,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="Pirate.cpp" />
+    <ClCompile Include="PlaneRG.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Road.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
@@ -40,6 +41,7 @@
     <ClInclude Include="GeometryNode.h" />
     <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="Pirate.h" />
+    <ClInclude Include="PlaneRG.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Road.h" />
     <ClInclude Include="ShaderProgram.h" />

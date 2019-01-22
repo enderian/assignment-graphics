@@ -3,8 +3,11 @@
 #include "Pirate.h"
 #include "Road.h"
 #include "Treasure.h"
+#include "PlaneRG.h"
 #include "OBJLoader.h"
 #include <glm/gtc/matrix_transform.inl>
+#include <SDL2/SDL.h>
+#include <iostream>
 
 Game::Game()
 {
@@ -27,6 +30,7 @@ bool Game::InitializeObjects()
 	Pirate::InitializeMeshes();
 	Road::InitializeMeshes();
 	Treasure::InitializeMeshes();
+	PlaneRG::InitializeMeshes();
 
 	OBJLoader loader;
 	m_terrain = new GeometryNode();
@@ -60,6 +64,10 @@ bool Game::InitializeObjects()
 		this->m_treasures.push_back(treasure);
 	}
 
+	plane_rg = new PlaneRG();
+	
+	plane_rg->SetPosition(plane_rg->pos);
+
 	return true;
 }
 
@@ -84,6 +92,7 @@ void Game::Update(float elapsed)
 	{
 		pirate->Update(this);
 	}
+	plane_rg->Update(this);
 }
 
 void Game::DrawGeometry(Renderer* renderer)
@@ -101,6 +110,7 @@ void Game::DrawGeometry(Renderer* renderer)
 	{
 		treasure->DrawGeometry(renderer);
 	}
+	plane_rg->DrawGeometry(renderer);
 }
 
 void Game::DrawGeometryToShadowMap(Renderer* renderer)
@@ -118,4 +128,5 @@ void Game::DrawGeometryToShadowMap(Renderer* renderer)
 	{
 		treasure->DrawGeometryToShadowMap(renderer);
 	}
+	plane_rg->DrawGeometryToShadowMap(renderer);
 }

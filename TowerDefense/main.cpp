@@ -4,6 +4,7 @@
 #include "GLEW\glew.h"
 #include "Renderer.h"
 #include "Game.h"
+#include "PlaneRG.h"
 
 using namespace std;
 
@@ -128,18 +129,22 @@ int main(int argc, char *argv[])
 				else if (event.key.keysym.sym == SDLK_w || event.key.keysym.sym == SDLK_UP)
 				{
 					game->renderer()->CameraMoveForward(true);
+					game->getPlaneRG()->moveUp();
 				}
 				else if (event.key.keysym.sym == SDLK_s || event.key.keysym.sym == SDLK_DOWN)
 				{
 					game->renderer()->CameraMoveBackWard(true);
+					game->getPlaneRG()->moveDown();
 				}	
 				else if (event.key.keysym.sym == SDLK_a || event.key.keysym.sym == SDLK_LEFT)
 				{
 					game->renderer()->CameraMoveLeft(true);
+					game->getPlaneRG()->moveLeft();
 				}
 				else if (event.key.keysym.sym == SDLK_d || event.key.keysym.sym == SDLK_RIGHT)
 				{
 					game->renderer()->CameraMoveRight(true);
+					game->getPlaneRG()->moveRight();
 				}
 			}
 			else if (event.type == SDL_KEYUP)
