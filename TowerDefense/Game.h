@@ -84,7 +84,7 @@ public:
 
 	void Update(float elapsed);
 	void Render();
-	void SDLEvent();
+	void SpawnPirate(float dt);
 
 	void DrawGeometry(Renderer* renderer) override;
 	void DrawGeometryToShadowMap(Renderer* renderer) override;

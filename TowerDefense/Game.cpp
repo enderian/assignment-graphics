@@ -45,8 +45,8 @@ bool Game::InitializeObjects()
 	//Create an empty pirate vector.
 	this->m_pirates = std::vector<class Pirate*>();
 
-	auto pirate = new Pirate();
-	this->m_pirates.push_back(pirate);
+	/*auto pirate = new Pirate(time());
+	this->m_pirates.push_back(pirate);*/
 
 	for (auto pos : game_tiles)
 	{
@@ -111,6 +111,12 @@ void Game::DrawGeometry(Renderer* renderer)
 		treasure->DrawGeometry(renderer);
 	}
 	plane_rg->DrawGeometry(renderer);
+}
+
+void Game::SpawnPirate(float dt)
+{
+	auto pirate = new Pirate(dt);
+	this->m_pirates.push_back(pirate);
 }
 
 void Game::DrawGeometryToShadowMap(Renderer* renderer)

@@ -113,6 +113,9 @@ int main(int argc, char *argv[])
 
 	auto simulation_start = chrono::steady_clock::now();
 
+	float start = game->time();
+	double passed;
+
 	// Wait for user exit
 	while (quit == false)
 	{
@@ -204,11 +207,18 @@ int main(int argc, char *argv[])
 				}
 			}
 		}
-
+		
 		// Compute the ellapsed time
 		auto simulation_end = chrono::steady_clock::now();
 		float dt = chrono::duration <float>(simulation_end - simulation_start).count(); // in seconds
 		simulation_start = chrono::steady_clock::now();
+
+		passed = (game->time() - start);
+		if(passed >= 20)
+		{
+			game->SpawnPirate(game->time());
+			start = game->time();
+		}
 
 		// Update
 		game->Update(dt);

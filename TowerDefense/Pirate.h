@@ -29,9 +29,14 @@ class Pirate : public GameObject
 
 	int m_current_tile = 0;
 
+	float spawn_time;
+
 public:
 	Pirate();
+	Pirate(float spawn_time);
 	virtual ~Pirate();
+
+	float getTime();
 
 	static bool InitializeMeshes();
 
