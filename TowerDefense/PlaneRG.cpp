@@ -44,7 +44,7 @@ void PlaneRG::Update(Game* game)
 		if(i.x == pos.x && i.z == pos.z)
 		{
 			curr_plane = m_plane_r;
-			break;
+			return;
 		}
 		else curr_plane = m_plane_g;
 	}
@@ -54,7 +54,7 @@ void PlaneRG::Update(Game* game)
 		if(t->GetPos().x == pos.x && t->GetPos().z == pos.z)
 		{
 			curr_plane = m_plane_r;
-			break;
+			return;
 		}
 		else curr_plane = m_plane_g;
 	}

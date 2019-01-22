@@ -87,7 +87,8 @@ public:
 	void Render();
 	void SpawnPirate(float dt);
 	void DeployTower(glm::vec3 pos);
-	void RemoveTower(glm::vec3 pos);
+	bool RemoveTower(glm::vec3 pos);
+	void AddTower();
 
 	void DrawGeometry(Renderer* renderer) override;
 	void DrawGeometryToShadowMap(Renderer* renderer) override;

@@ -113,7 +113,10 @@ int main(int argc, char *argv[])
 
 	auto simulation_start = chrono::steady_clock::now();
 
-	float start = game->time();
+	float start_of_spawns = game->time();
+	float start_of_towers = game->time();
+	float start_of_additions = game->time();
+	boolean allowed = false;
 	double passed;
 
 	// Wait for user exit
@@ -152,8 +155,12 @@ int main(int argc, char *argv[])
 				}
 				else if (event.key.keysym.sym == SDLK_r)
 				{
-					glm::vec4 place = game->getPlaneRG()->getPos();
-					game->RemoveTower(glm::vec3(place.x, place.y, place.z));
+					if(allowed)
+					{
+						glm::vec4 place = game->getPlaneRG()->getPos();
+						bool res = game->RemoveTower(glm::vec3(place.x, place.y, place.z));
+						if (res) allowed = false;
+					}
 				}
 				else if (event.key.keysym.sym == SDLK_t)
 				{
@@ -161,6 +168,7 @@ int main(int argc, char *argv[])
 					if(place.w)
 					{
 						game->DeployTower(glm::vec3(place.x, place.y, place.z));
+						//if (!res) allowed = false;
 					}
 				}
 			}
@@ -222,11 +230,23 @@ int main(int argc, char *argv[])
 		float dt = chrono::duration <float>(simulation_end - simulation_start).count(); // in seconds
 		simulation_start = chrono::steady_clock::now();
 
-		passed = (game->time() - start);
+		passed = (game->time() - start_of_spawns);
 		if(passed >= 20)
 		{
 			game->SpawnPirate(game->time());
-			start = game->time();
+			start_of_spawns = game->time();
+		}
+
+		if((game->time() - start_of_towers) >= 30)
+		{
+			allowed = true;
+			start_of_towers = game->time();
+		}
+
+		if((game->time() - start_of_additions) >= 120)
+		{
+			game->AddTower();
+			start_of_additions = game->time();
 		}
 
 		// Update

@@ -160,7 +160,7 @@ void Game::DeployTower(glm::vec3 pos)
 {
 	for (Tower* t : m_towers)
 	{
-		if(!t->IsUsed())
+		if (!t->IsUsed())
 		{
 			t->SetPosition(pos);
 			t->setPos(pos);
@@ -170,7 +170,7 @@ void Game::DeployTower(glm::vec3 pos)
 	}
 }
 
-void Game::RemoveTower(glm::vec3 pos)
+bool Game::RemoveTower(glm::vec3 pos)
 {
 	for (Tower* t: m_towers)
 	{
@@ -178,8 +178,16 @@ void Game::RemoveTower(glm::vec3 pos)
 		{
 			t->setPos(glm::vec3(-1));
 			t->setUsed(false);
+			return true;
 		}
 	}
+	return false;
+}
+
+void Game::AddTower()
+{
+	auto tower = new Tower();
+	this->m_towers.push_back(tower);
 }
 
 
