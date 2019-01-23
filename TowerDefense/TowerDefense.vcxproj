@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CannonBall.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GeometricMesh.cpp" />
     <ClCompile Include="GeometryNode.cpp" />
@@ -26,6 +27,7 @@
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="Pirate.cpp" />
     <ClCompile Include="PlaneRG.cpp" />
+    <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Road.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
@@ -36,12 +38,14 @@
     <ClCompile Include="Treasure.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CannonBall.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GeometricMesh.h" />
     <ClInclude Include="GeometryNode.h" />
     <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="Pirate.h" />
     <ClInclude Include="PlaneRG.h" />
+    <ClInclude Include="Projectile.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Road.h" />
     <ClInclude Include="ShaderProgram.h" />

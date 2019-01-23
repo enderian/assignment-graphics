@@ -51,6 +51,7 @@ private:
 	float m_time = 0.0f;
 	class Renderer* m_renderer;
 	class PlaneRG* plane_rg;
+	class CannonBall* test_ball;
 	class GeometryNode* m_terrain;
 	glm::mat4 m_terrain_transformation_matrix;
 	glm::mat4 m_terrain_transformation_matrix_normal;

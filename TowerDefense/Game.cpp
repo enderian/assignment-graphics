@@ -5,6 +5,7 @@
 #include "Treasure.h"
 #include "PlaneRG.h"
 #include "Tower.h"
+#include "CannonBall.h"
 #include "OBJLoader.h"
 #include <glm/gtc/matrix_transform.inl>
 #include <SDL2/SDL.h>
@@ -33,6 +34,7 @@ bool Game::InitializeObjects()
 	Treasure::InitializeMeshes();
 	PlaneRG::InitializeMeshes();
 	Tower::InitializeMeshes();
+	CannonBall::InitializeMeshes();
 
 	OBJLoader loader;
 	m_terrain = new GeometryNode();
@@ -74,6 +76,10 @@ bool Game::InitializeObjects()
 	plane_rg = new PlaneRG();
 	
 	plane_rg->SetPosition(plane_rg->pos);
+
+	test_ball = new CannonBall();
+
+	test_ball->SetPosition(glm::vec3(4, 0, 4));
 
 	return true;
 }
@@ -126,6 +132,7 @@ void Game::DrawGeometry(Renderer* renderer)
 		if(tower->IsUsed()) tower->DrawGeometry(renderer);
 	}
 	plane_rg->DrawGeometry(renderer);
+	test_ball->DrawGeometry(renderer);
 }
 
 void Game::DrawGeometryToShadowMap(Renderer* renderer)
@@ -148,6 +155,7 @@ void Game::DrawGeometryToShadowMap(Renderer* renderer)
 		if (tower->IsUsed()) tower->DrawGeometryToShadowMap(renderer);
 	}
 	plane_rg->DrawGeometryToShadowMap(renderer);
+	test_ball->DrawGeometryToShadowMap(renderer);
 }
 
 void Game::SpawnPirate(float dt)
