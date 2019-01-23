@@ -6,7 +6,7 @@
 #include "PlaneRG.h"
 #include "Tower.h"
 #include "CannonBall.h"
-#include "OBJLoader.h"
+#include "Terrain.h"
 #include <glm/gtc/matrix_transform.inl>
 #include <SDL2/SDL.h>
 #include <iostream>
@@ -35,16 +35,11 @@ bool Game::InitializeObjects()
 	PlaneRG::InitializeMeshes();
 	Tower::InitializeMeshes();
 	CannonBall::InitializeMeshes();
+	Terrain::InitializeMeshes();
 
-	OBJLoader loader;
-	m_terrain = new GeometryNode();
-	m_terrain->Init(loader.load("../assets/Terrain/terrain.obj"));
+	m_terrain = new Terrain();
 
-	auto translate = glm::translate(glm::mat4(1), glm::vec3(18, -0.01, 18));
-	auto scale = glm::scale(glm::mat4(1), glm::vec3(20, 20, 20));
-
-	m_terrain_transformation_matrix = translate * scale;
-	m_terrain_transformation_matrix_normal = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_terrain_transformation_matrix))));
+	m_terrain->SetPosition(glm::vec3(18, -0.01, 18));
 
 	//Create an empty pirate vector.
 	this->m_pirates = std::vector<class Pirate*>();
@@ -114,7 +109,8 @@ void Game::Update(float elapsed)
 
 void Game::DrawGeometry(Renderer* renderer)
 {
-	renderer->DrawGeometryNode(m_terrain, m_terrain_transformation_matrix, m_terrain_transformation_matrix_normal);
+	//renderer->DrawGeometryNode(m_terrain, m_terrain_transformation_matrix, m_terrain_transformation_matrix_normal);
+	m_terrain->DrawGeometry(renderer);
 	for (auto pirate : m_pirates)
 	{
 		pirate->DrawGeometry(renderer);
@@ -137,7 +133,8 @@ void Game::DrawGeometry(Renderer* renderer)
 
 void Game::DrawGeometryToShadowMap(Renderer* renderer)
 {
-	renderer->DrawGeometryNodeToShadowMap(m_terrain, m_terrain_transformation_matrix, m_terrain_transformation_matrix_normal);
+	//renderer->DrawGeometryNodeToShadowMap(m_terrain, m_terrain_transformation_matrix, m_terrain_transformation_matrix_normal);
+	m_terrain->DrawGeometryToShadowMap(renderer);
 	for (auto pirate : m_pirates)
 	{
 		pirate->DrawGeometryToShadowMap(renderer);

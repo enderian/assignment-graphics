@@ -1,22 +1,20 @@
-#ifndef PROJECTILE_H
-#define PROJECTILE_H
+#ifndef TERRAIN_H
+#define TERRAIN_H
 
 #include "GeometryNode.h"
 #include "Renderer.h"
 #include "Game.h"
 
-class Projectile : public GameObject
+class Terrain : public GameObject
 {
 private:
+	GeometryNode* m_terrain;
 	glm::mat4 m_transformation_matrix;
 	glm::mat4 m_transformation_matrix_normal;
 
-protected:
-	class GeometryNode* m_projectile;
-
 public:
-	Projectile();
-	virtual ~Projectile();
+	Terrain();
+	virtual ~Terrain();
 
 	static bool InitializeMeshes();
 

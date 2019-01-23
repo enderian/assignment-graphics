@@ -32,6 +32,7 @@
     <ClCompile Include="Road.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="SpotlightNode.cpp" />
+    <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Tools.cpp" />
     <ClCompile Include="Tower.cpp" />
@@ -50,6 +51,7 @@
     <ClInclude Include="Road.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="SpotlightNode.h" />
+    <ClInclude Include="Terrain.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Tools.h" />
     <ClInclude Include="Tower.h" />
