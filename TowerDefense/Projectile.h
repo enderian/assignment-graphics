@@ -10,6 +10,7 @@ class Projectile : public GameObject
 private:
 	glm::mat4 m_transformation_matrix;
 	glm::mat4 m_transformation_matrix_normal;
+	glm::vec3 pos;
 
 protected:
 	class GeometryNode* m_projectile;

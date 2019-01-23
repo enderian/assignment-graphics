@@ -38,6 +38,8 @@ public:
 
 	float getTime();
 
+	glm::vec3 pos;
+
 	static bool InitializeMeshes();
 
 	void Update(Game* game) override;

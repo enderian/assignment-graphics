@@ -9,6 +9,7 @@
 #include "Terrain.h"
 #include <glm/gtc/matrix_transform.inl>
 #include <SDL2/SDL.h>
+#include "OBJLoader.h"
 #include <iostream>
 
 Game::Game()
@@ -101,6 +102,7 @@ void Game::Update(float elapsed)
 		pirate->Update(this);
 	}
 	plane_rg->Update(this);
+	test_ball->Update(this);
 }
 
 void Game::DrawGeometry(Renderer* renderer)
@@ -123,7 +125,7 @@ void Game::DrawGeometry(Renderer* renderer)
 		if(tower->IsUsed()) tower->DrawGeometry(renderer);
 	}
 	plane_rg->DrawGeometry(renderer);
-	test_ball->DrawGeometry(renderer);
+	//test_ball->DrawGeometry(renderer);
 }
 
 void Game::DrawGeometryToShadowMap(Renderer* renderer)
@@ -146,7 +148,7 @@ void Game::DrawGeometryToShadowMap(Renderer* renderer)
 		if (tower->IsUsed()) tower->DrawGeometryToShadowMap(renderer);
 	}
 	plane_rg->DrawGeometryToShadowMap(renderer);
-	test_ball->DrawGeometryToShadowMap(renderer);
+	//test_ball->DrawGeometryToShadowMap(renderer);
 }
 
 void Game::SpawnPirate(float dt)

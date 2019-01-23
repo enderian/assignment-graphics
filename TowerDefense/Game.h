@@ -53,8 +53,6 @@ private:
 	class PlaneRG* plane_rg;
 	class CannonBall* test_ball;
 	class Terrain* m_terrain;
-	glm::mat4 m_terrain_transformation_matrix;
-	glm::mat4 m_terrain_transformation_matrix_normal;
 
 	std::vector<class Pirate*> m_pirates;
 	std::vector<class Road*> m_roads;
