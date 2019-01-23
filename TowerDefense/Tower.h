@@ -27,7 +27,6 @@ public:
 	void DrawGeometry(class Renderer* renderer) override;
 	void DrawGeometryToShadowMap(class Renderer* renderer) override;
 
-	void setPos(glm::vec3 pos);
 	void setUsed(bool used);
 
 	bool IsUsed();

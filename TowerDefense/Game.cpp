@@ -163,7 +163,6 @@ void Game::DeployTower(glm::vec3 pos)
 		if (!t->IsUsed())
 		{
 			t->SetPosition(pos);
-			t->setPos(pos);
 			t->setUsed(true);
 			break;
 		}
@@ -176,7 +175,6 @@ bool Game::RemoveTower(glm::vec3 pos)
 	{
 		if(pos.x == t->GetPos().x && pos.z == t->GetPos().z && t->IsUsed())
 		{
-			t->setPos(glm::vec3(-1));
 			t->setUsed(false);
 			return true;
 		}

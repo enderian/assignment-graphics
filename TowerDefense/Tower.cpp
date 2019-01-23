@@ -24,6 +24,7 @@ Tower::~Tower()
 
 void Tower::SetPosition(glm::vec3 position)
 {
+	this->pos = position;
 	m_transformation_matrix = glm::translate(glm::mat4(1), position*glm::vec3(4));
 	m_transformation_matrix *= glm::scale(glm::mat4(1), glm::vec3(0.6));
 	m_transformation_matrix_normal = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_transformation_matrix))));
@@ -45,11 +46,6 @@ void Tower::DrawGeometry(Renderer* renderer)
 void Tower::DrawGeometryToShadowMap(Renderer* renderer)
 {
 	renderer->DrawGeometryNodeToShadowMap(m_tower, m_transformation_matrix, m_transformation_matrix_normal);
-}
-
-void Tower::setPos(glm::vec3 pos)
-{
-	this->pos = pos;
 }
 
 void Tower::setUsed(bool used)

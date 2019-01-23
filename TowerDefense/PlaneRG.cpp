@@ -51,7 +51,7 @@ void PlaneRG::Update(Game* game)
 	std::vector<Tower*> towers = game->GetTowers();
 	for (auto t : towers)
 	{
-		if(t->GetPos().x == pos.x && t->GetPos().z == pos.z)
+		if(t->GetPos().x == pos.x && t->GetPos().z == pos.z && t->IsUsed())
 		{
 			curr_plane = m_plane_r;
 			return;
