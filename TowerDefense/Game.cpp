@@ -74,7 +74,7 @@ bool Game::InitializeObjects()
 
 	test_ball = new CannonBall();
 
-	test_ball->SetPosition(glm::vec3(4, 0, 4));
+	test_ball->SetPosition(glm::vec3(4, 1, 4));
 
 	return true;
 }
@@ -100,16 +100,11 @@ void Game::Update(float elapsed)
 	{
 		pirate->Update(this);
 	}
-	/*for (auto tower : m_towers)
-	{
-		tower->Update(this);
-	}*/
 	plane_rg->Update(this);
 }
 
 void Game::DrawGeometry(Renderer* renderer)
 {
-	//renderer->DrawGeometryNode(m_terrain, m_terrain_transformation_matrix, m_terrain_transformation_matrix_normal);
 	m_terrain->DrawGeometry(renderer);
 	for (auto pirate : m_pirates)
 	{
@@ -133,7 +128,6 @@ void Game::DrawGeometry(Renderer* renderer)
 
 void Game::DrawGeometryToShadowMap(Renderer* renderer)
 {
-	//renderer->DrawGeometryNodeToShadowMap(m_terrain, m_terrain_transformation_matrix, m_terrain_transformation_matrix_normal);
 	m_terrain->DrawGeometryToShadowMap(renderer);
 	for (auto pirate : m_pirates)
 	{

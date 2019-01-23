@@ -241,7 +241,7 @@ bool Renderer::InitLightSources()
 	// Initialize the spot light
 	m_spotlight_node.SetPosition(glm::vec3(16, 30, 16));
 	m_spotlight_node.SetTarget(glm::vec3(16.4, 0, 16));
-	m_spotlight_node.SetColor(55.0f * glm::vec3(255, 255, 251) / 255.f);
+	m_spotlight_node.SetColor(60.0f * glm::vec3(255, 255, 251) / 255.f);
 	m_spotlight_node.SetConeSize(73, 80);
 	m_spotlight_node.CastShadow(true);
 
