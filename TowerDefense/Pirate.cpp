@@ -62,12 +62,12 @@ void Pirate::Update(Game* game)
 
 	if (m_current_tile == 28)
 	{
-		translate = glm::translate(translate, game_tiles[m_current_tile] * glm::vec3(4));
+		translate = glm::translate(translate, game_tiles[m_current_tile] * glm::vec3(4, 1, 4));
 		pos = game_tiles[m_current_tile];
 	} else
 	{
 		const float alpha = std::fmod((game->time() - spawn_time) / SECONDS_PER_TILE, SECONDS_PER_TILE) / SECONDS_PER_TILE;
-		translate = glm::translate(translate, glm::mix(game_tiles[m_current_tile], game_tiles[m_current_tile + 1], alpha) * glm::vec3(4));
+		translate = glm::translate(translate, glm::mix(game_tiles[m_current_tile], game_tiles[m_current_tile + 1], alpha) * glm::vec3(4, 1, 4));
 		rotation = glm::inverse(glm::lookAt(game_tiles[m_current_tile], game_tiles[m_current_tile + 1], glm::vec3(0, 1, 0)));
 		pos = glm::mix(game_tiles[m_current_tile], game_tiles[m_current_tile + 1], alpha);
 	}

@@ -231,7 +231,7 @@ int main(int argc, char *argv[])
 		simulation_start = chrono::steady_clock::now();
 
 		passed = (game->time() - start_of_spawns);
-		if(passed >= 1)
+		if(passed >= 10)
 		{
 			game->SpawnPirate(game->time());
 			start_of_spawns = game->time();
