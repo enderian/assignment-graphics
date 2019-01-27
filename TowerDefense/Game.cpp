@@ -51,7 +51,7 @@ bool Game::InitializeObjects()
 
 	for(int i = 0; i < 3; i++)
 	{
-		auto tower = new Tower();
+		auto tower = new Tower(time());
 		this->m_towers.push_back(tower);
 	}
 
@@ -75,7 +75,7 @@ bool Game::InitializeObjects()
 	
 	plane_rg->SetPosition(plane_rg->pos);
 
-	test_tower = new Tower();
+	test_tower = new Tower(time());
 
 	test_tower->SetPosition(glm::vec3(4, 0, 4));
 	test_tower->SetUsed(true);
@@ -221,7 +221,7 @@ bool Game::RemoveTower(glm::vec3 pos)
 
 void Game::AddTower()
 {
-	auto tower = new Tower();
+	auto tower = new Tower(time());
 	this->m_towers.push_back(tower);
 }
 

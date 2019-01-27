@@ -16,8 +16,10 @@ private:
 
 	bool used = false;
 
+	float ready;
+
 public:
-	Tower();
+	Tower(float ready);
 	virtual ~Tower();
 
 	static bool InitializeMeshes();

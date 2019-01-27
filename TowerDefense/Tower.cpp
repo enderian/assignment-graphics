@@ -13,10 +13,11 @@ bool Tower::InitializeMeshes()
 	return true;
 }
 
-Tower::Tower()
+Tower::Tower(float time)
 {
 	m_tower = new GeometryNode();
 	m_tower->Init(m_tower_mesh);
+	ready = time;
 }
 
 Tower::~Tower()
@@ -41,25 +42,13 @@ void Tower::Update(Game* game)
 {
 	if(used)
 	{
-		/*std::vector<Tower*> temp = game->GetTowers();
-		for(Tower* t: temp)
-		{
-			if (t->IsUsed())
-			{
-				//std::cout << glm::abs(t->GetPos().x - this->GetPos().x) << std::endl;
-				if ((glm::abs(t->GetPos().x - pos.x) <= 1) && (glm::abs(t->GetPos().z - pos.z) <= 1))
-				{
-					game->SpawnProjectile(pos, t->GetPos());
-				}
-			}
-		}*/
 		std::vector<Pirate*> pirates = game->GetPirates();
 		for(Pirate* p: pirates)
 		{
-			if ((glm::abs(p->GetPos().x - this->pos.x) <= 1) && (glm::abs(p->GetPos().z - this->pos.z) <= 1))
+			if ((glm::abs(p->GetPos().x - this->pos.x) <= 1) && (glm::abs(p->GetPos().z - this->pos.z) <= 1) && (game->time() - ready) >= 0.5)
 			{
-				std::cout << "Here";
 				game->SpawnProjectile(pos, p->GetPos());
+				ready = game->time();
 			}
 		}
 	}
