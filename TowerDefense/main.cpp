@@ -231,12 +231,11 @@ int main(int argc, char *argv[])
 		simulation_start = chrono::steady_clock::now();
 
 		passed = (game->time() - start_of_spawns);
-		if(passed >= 20)
+		if(passed >= 1)
 		{
 			game->SpawnPirate(game->time());
 			start_of_spawns = game->time();
 		}
-
 		if((game->time() - start_of_towers) >= 30)
 		{
 			allowed = true;

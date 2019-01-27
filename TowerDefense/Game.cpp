@@ -47,6 +47,8 @@ bool Game::InitializeObjects()
 
 	this->m_towers = std::vector<class Tower*>();
 
+	this->m_projectiles = std::vector<class Projectile*>();
+
 	for(int i = 0; i < 3; i++)
 	{
 		auto tower = new Tower();
@@ -73,9 +75,16 @@ bool Game::InitializeObjects()
 	
 	plane_rg->SetPosition(plane_rg->pos);
 
+	test_tower = new Tower();
+
+	test_tower->SetPosition(glm::vec3(4, 0, 4));
+	test_tower->SetUsed(true);
+
+	std::cout << test_tower->GetPos().x << std::endl;
+
 	test_ball = new CannonBall();
 
-	test_ball->SetPosition(glm::vec3(4, 1, 4));
+	test_ball->SetPosition(glm::vec3(3.99596, 3.8, 3.96968));
 
 	return true;
 }
@@ -101,8 +110,17 @@ void Game::Update(float elapsed)
 	{
 		pirate->Update(this);
 	}
+	for (auto projectile : m_projectiles)
+	{
+		projectile->Update(this);
+	}
+	for (auto tower : m_towers)
+	{
+		tower->Update(this);
+	}
 	plane_rg->Update(this);
 	test_ball->Update(this);
+	test_tower->Update(this);
 }
 
 void Game::DrawGeometry(Renderer* renderer)
@@ -124,8 +142,13 @@ void Game::DrawGeometry(Renderer* renderer)
 	{
 		if(tower->IsUsed()) tower->DrawGeometry(renderer);
 	}
+	for (auto projectile : m_projectiles)
+	{
+		projectile->DrawGeometry(renderer);
+	}
 	plane_rg->DrawGeometry(renderer);
-	//test_ball->DrawGeometry(renderer);
+	test_ball->DrawGeometry(renderer);
+	test_tower->DrawGeometry(renderer);
 }
 
 void Game::DrawGeometryToShadowMap(Renderer* renderer)
@@ -147,8 +170,13 @@ void Game::DrawGeometryToShadowMap(Renderer* renderer)
 	{
 		if (tower->IsUsed()) tower->DrawGeometryToShadowMap(renderer);
 	}
+	for (auto projectile : m_projectiles)
+	{
+		projectile->DrawGeometryToShadowMap(renderer);
+	}
 	plane_rg->DrawGeometryToShadowMap(renderer);
-	//test_ball->DrawGeometryToShadowMap(renderer);
+	test_ball->DrawGeometryToShadowMap(renderer);
+	test_tower->DrawGeometryToShadowMap(renderer);
 }
 
 void Game::SpawnPirate(float dt)
@@ -156,6 +184,14 @@ void Game::SpawnPirate(float dt)
 	auto pirate = new Pirate(dt);
 	this->m_pirates.push_back(pirate);
 }
+
+void Game::SpawnProjectile(glm::vec3 pos, glm::vec3 dir)
+{
+	auto projectile = new CannonBall(dir, time());
+	projectile->SetPosition(glm::vec3(pos.x - 0.00404, 3.8, pos.z - 0.03032));
+	this->m_projectiles.push_back(projectile);
+}
+
 
 void Game::DeployTower(glm::vec3 pos)
 {
@@ -194,3 +230,9 @@ std::vector<Tower*> Game::GetTowers()
 {
 	return this->m_towers;
 }
+
+std::vector<Pirate*> Game::GetPirates()
+{
+	return this->m_pirates;
+}
+

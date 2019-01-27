@@ -5,10 +5,18 @@
 
 class CannonBall : public Projectile
 {
+private:
+	glm::vec3 direction;
+	float time;
+
 public:
 	CannonBall();
 
+	CannonBall(glm::vec3 direction, float time);
+
 	static bool InitializeMeshes();
+
+	void Update(Game* game) override;
 
 };
 

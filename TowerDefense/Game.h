@@ -51,13 +51,17 @@ private:
 	float m_time = 0.0f;
 	class Renderer* m_renderer;
 	class PlaneRG* plane_rg;
-	class CannonBall* test_ball;
 	class Terrain* m_terrain;
+
+	//Testing
+	class CannonBall* test_ball;
+	class Tower* test_tower;
 
 	std::vector<class Pirate*> m_pirates;
 	std::vector<class Road*> m_roads;
 	std::vector<class Treasure*> m_treasures;
 	std::vector<class Tower*> m_towers;
+	std::vector<class Projectile*> m_projectiles;
 
 public:
 	Game();
@@ -85,6 +89,7 @@ public:
 	void Update(float elapsed);
 	void Render();
 	void SpawnPirate(float dt);
+	void SpawnProjectile(glm::vec3 pos, glm::vec3 dir);
 	void DeployTower(glm::vec3 pos);
 	bool RemoveTower(glm::vec3 pos);
 	void AddTower();
@@ -93,6 +98,7 @@ public:
 	void DrawGeometryToShadowMap(Renderer* renderer) override;
 
 	std::vector<Tower*> GetTowers();
+	std::vector<Pirate*> GetPirates();
 };
 
 class GameObject : public Renderable

@@ -63,11 +63,13 @@ void Pirate::Update(Game* game)
 	if (m_current_tile == 28)
 	{
 		translate = glm::translate(translate, game_tiles[m_current_tile] * glm::vec3(4));
+		pos = game_tiles[m_current_tile];
 	} else
 	{
 		const float alpha = std::fmod((game->time() - spawn_time) / SECONDS_PER_TILE, SECONDS_PER_TILE) / SECONDS_PER_TILE;
 		translate = glm::translate(translate, glm::mix(game_tiles[m_current_tile], game_tiles[m_current_tile + 1], alpha) * glm::vec3(4));
 		rotation = glm::inverse(glm::lookAt(game_tiles[m_current_tile], game_tiles[m_current_tile + 1], glm::vec3(0, 1, 0)));
+		pos = glm::mix(game_tiles[m_current_tile], game_tiles[m_current_tile + 1], alpha);
 	}
 
 	m_transformation_matrix = translate * scale * rotation;
@@ -101,4 +103,9 @@ void Pirate::DrawGeometryToShadowMap(Renderer* renderer)
 	renderer->DrawGeometryNodeToShadowMap(m_arm, m_arm_transformation_matrix, m_arm_transformation_matrix_normal);
 	renderer->DrawGeometryNodeToShadowMap(m_left_foot, m_left_foot_transformation_matrix, m_left_foot_transformation_matrix_normal);
 	renderer->DrawGeometryNodeToShadowMap(m_right_foot, m_right_foot_transformation_matrix, m_right_foot_transformation_matrix_normal);
+}
+
+glm::vec3 Pirate::GetPos()
+{
+	return this->pos;
 }

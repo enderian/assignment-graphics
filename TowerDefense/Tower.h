@@ -22,7 +22,8 @@ public:
 
 	static bool InitializeMeshes();
 
-	void SetPosition(glm::vec3 position);
+	void SetPosition(glm::vec3 &position);
+	void SetUsed(bool used);
 	void Update(Game* game) override;
 	void DrawGeometry(class Renderer* renderer) override;
 	void DrawGeometryToShadowMap(class Renderer* renderer) override;

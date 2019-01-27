@@ -27,6 +27,8 @@ class Pirate : public GameObject
 	glm::mat4 m_right_foot_transformation_matrix;
 	glm::mat4 m_right_foot_transformation_matrix_normal;
 
+	glm::vec3 pos;
+
 	int m_current_tile = 0;
 
 	float spawn_time;
@@ -38,12 +40,12 @@ public:
 
 	float getTime();
 
-	glm::vec3 pos;
-
 	static bool InitializeMeshes();
 
 	void Update(Game* game) override;
 	void DrawGeometry(Renderer* renderer) override;
 	void DrawGeometryToShadowMap(Renderer* renderer) override;
+	
+	glm::vec3 GetPos();
 };
 #endif // PIRATE_H
