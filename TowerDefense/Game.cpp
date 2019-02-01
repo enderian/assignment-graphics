@@ -80,8 +80,6 @@ bool Game::InitializeObjects()
 	test_tower->SetPosition(glm::vec3(4, 0, 4));
 	test_tower->SetUsed(true);
 
-	std::cout << test_tower->GetPos().x << std::endl;
-
 	test_ball = new CannonBall();
 
 	test_ball->SetPosition(glm::vec3(3.99596, 3.8, 3.96968));

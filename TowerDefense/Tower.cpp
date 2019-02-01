@@ -25,7 +25,7 @@ Tower::~Tower()
 	delete m_tower;
 }
 
-void Tower::SetPosition(glm::vec3 &position)
+void Tower::SetPosition(glm::vec3 position)
 {
 	this->pos = position;
 	m_transformation_matrix = glm::translate(glm::mat4(1), position*glm::vec3(4));

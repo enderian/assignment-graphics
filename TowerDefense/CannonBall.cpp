@@ -29,7 +29,7 @@ void CannonBall::Update(Game* game)
 {
 	//pos.x += ((this->direction.x - this->pos.x) >= 0 ? this->direction.x*0.009 : -this->direction.x*0.009);
 	//pos.z += ((this->direction.z - this->pos.z) >= 0 ? this->direction.z*0.009 : -this->direction.z*0.009);
-	const float alpha = (std::fmod((game->time() - this->time) / 1.0f, 1.0f) / 1.0f)*0.009;
+	const float alpha = (std::fmod((game->time() - this->time) / 1.0f, 1.0f) / 1.0f);
 	pos = glm::mix(this->pos, this->direction, alpha);
 	SetPosition(pos);
 }
