@@ -439,6 +439,8 @@ void Renderer::DrawGeometryNodeToShadowMap(GeometryNode* node, glm::mat4 model_m
 	}
 }
 
+
+//THIS DOES NOT WORK, I'M TRYING TO FIGURE IT OUT
 void Renderer::RenderHud()
 {
 	/*glBindFramebuffer(GL_FRAMEBUFFER, 0);
