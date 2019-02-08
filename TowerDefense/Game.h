@@ -56,10 +56,11 @@ private:
 	//Testing
 	class CannonBall* test_ball;
 	class Tower* test_tower;
+	class BulletBill* test_bill;
 
-	std::vector<class Pirate*> m_pirates;
 	std::vector<class Road*> m_roads;
 	std::vector<class Treasure*> m_treasures;
+	std::vector<class Pirate*> m_pirates;
 	std::vector<class Tower*> m_towers;
 	std::vector<class Projectile*> m_projectiles;
 
@@ -89,16 +90,21 @@ public:
 	void Update(float elapsed);
 	void Render();
 	void SpawnPirate(float dt);
-	void SpawnProjectile(glm::vec3 pos, glm::vec3 dir);
+	void SpawnProjectile(glm::vec3 pos, glm::vec3 dir, Tower* tower);
 	void DeployTower(glm::vec3 pos);
+	void DeployTowerBB(glm::vec3 pos);
 	bool RemoveTower(glm::vec3 pos);
 	void AddTower();
+
+	void SetPirates(std::vector<Pirate*> m_pirates);
 
 	void DrawGeometry(Renderer* renderer) override;
 	void DrawGeometryToShadowMap(Renderer* renderer) override;
 
 	std::vector<Tower*> GetTowers();
 	std::vector<Pirate*> GetPirates();
+	std::vector<Projectile*> GetCannonBalls();
+
 };
 
 class GameObject : public Renderable

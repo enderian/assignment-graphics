@@ -6,6 +6,7 @@
 #include "Renderer.h"
 #include "Game.h"
 #include "PlaneRG.h"
+#include "freeglut/freeglut.h"
 
 using namespace std;
 
@@ -106,6 +107,8 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
+	glutInit(&argc, argv);
+
 	//Quit flag
 	bool quit = false;
 	bool mouse_button_pressed = false;
@@ -118,7 +121,7 @@ int main(int argc, char *argv[])
 	float start_of_additions = game->time();
 	boolean allowed = false;
 	double passed;
-
+	game->SpawnPirate(game->time());
 	// Wait for user exit
 	while (quit == false)
 	{
@@ -168,6 +171,15 @@ int main(int argc, char *argv[])
 					if(place.w)
 					{
 						game->DeployTower(glm::vec3(place.x, place.y, place.z));
+						//if (!res) allowed = false;
+					}
+				}
+				else if (event.key.keysym.sym == SDLK_y)
+				{
+					glm::vec4 place = game->getPlaneRG()->getPos();
+					if (place.w)
+					{
+						game->DeployTowerBB(glm::vec3(place.x, place.y, place.z));
 						//if (!res) allowed = false;
 					}
 				}
@@ -224,7 +236,6 @@ int main(int argc, char *argv[])
 				}
 			}
 		}
-		
 		// Compute the ellapsed time
 		auto simulation_end = chrono::steady_clock::now();
 		float dt = chrono::duration <float>(simulation_end - simulation_start).count(); // in seconds
@@ -233,7 +244,7 @@ int main(int argc, char *argv[])
 		passed = (game->time() - start_of_spawns);
 		if(passed >= 10)
 		{
-			game->SpawnPirate(game->time());
+			//game->SpawnPirate(game->time());
 			start_of_spawns = game->time();
 		}
 		if((game->time() - start_of_towers) >= 30)

@@ -7,6 +7,8 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "OBJLoader.h"
 #include "TextureManager.h"
+#include "freeglut/freeglut.h"
+#include "GLEW/glew.h"
 
 // RENDERER
 Renderer::Renderer()
@@ -168,6 +170,16 @@ bool Renderer::InitRenderingTechniques()
 	m_spot_light_shadow_map_program.LoadUniform("uniform_view_matrix");
 	m_spot_light_shadow_map_program.LoadUniform("uniform_model_matrix");
 	
+	//Hud Program
+	vertex_shader_path = "../assets/Shaders/hud.vert";
+	fragment_shader_path = "../assets/Shaders/hud.frag";
+	m_hud_program.LoadVertexShaderFromFile(vertex_shader_path.c_str());
+	m_hud_program.LoadFragmentShaderFromFile(fragment_shader_path.c_str());
+	initialized = initialized && m_hud_program.CreateProgram();
+	m_hud_program.LoadUniform("uniform_texture");
+	m_hud_program.LoadUniform("uniform_projection_inverse_matrix");
+	
+
 	return initialized;
 }
 
@@ -426,6 +438,72 @@ void Renderer::DrawGeometryNodeToShadowMap(GeometryNode* node, glm::mat4 model_m
 		glDrawArrays(GL_TRIANGLES, node->parts[j].start_offset, node->parts[j].count);
 	}
 }
+
+void Renderer::RenderHud()
+{
+	/*glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, m_screen_width, m_screen_height);
+
+	glClear(GL_COLOR_BUFFER_BIT);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+
+	m_hud_program.Bind();
+
+	glUniformMatrix4fv(m_hud_program["uniform_projection_matrix"], 1, GL_FALSE, glm::value_ptr(m_projection_matrix));
+	glUniformMatrix4fv(m_hud_program["uniform_view_matrix"], 1, GL_FALSE, glm::value_ptr(m_view_matrix));
+	glUniform3f(m_hud_program["uniform_camera_position"], m_camera_position.x, m_camera_position.y, m_camera_position.z);
+
+	glBindVertexArray(m_vao_fbo);
+
+	GLuint temp = TextureManager::GetInstance().RequestTexture("../Assets/Hud/coins-pirates.png");
+
+	glBindTexture(GL_TEXTURE_2D, temp);
+
+	glBindVertexArray(0);
+
+	m_hud_program.Unbind();*/
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, m_screen_width, m_screen_height);
+
+	// clear the color and depth buffer
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// disable depth testing and blending
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+
+	// bind the post processing program
+	m_hud_program.Bind();
+
+	glBindVertexArray(m_vao_fbo);
+	// Bind the intermediate color image to texture unit 0
+	glActiveTexture(GL_TEXTURE0);
+	glTexCoord2f(0, 0);
+	GLuint temp = TextureManager::GetInstance().RequestTexture("../Assets/Hud/coins-pirates.png");
+
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+	//glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, 512, 512);
+
+	glBindTexture(GL_TEXTURE_2D, m_fbo_texture);
+	glUniform1i(m_hud_program["uniform_texture"], 0);
+
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	// Bind the intermediate depth buffer to texture unit 1
+	glm::mat4 projection_inverse_matrix = glm::inverse(m_projection_matrix);
+	glUniformMatrix4fv(m_hud_program["uniform_projection_inverse_matrix"], 1, GL_FALSE, glm::value_ptr(projection_inverse_matrix));
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	glBindVertexArray(0);
+
+	// Unbind the post processing program
+	m_hud_program.Unbind();
+}
+
 
 void Renderer::RenderToOuterRenderBuffer()
 {

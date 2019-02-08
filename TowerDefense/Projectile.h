@@ -8,10 +8,10 @@
 class Projectile : public GameObject
 {
 private:
-	glm::mat4 m_transformation_matrix;
-	glm::mat4 m_transformation_matrix_normal;
 
 protected:
+	glm::mat4 m_transformation_matrix;
+	glm::mat4 m_transformation_matrix_normal;
 	class GeometryNode* m_projectile;
 	glm::vec3 pos;
 
@@ -21,11 +21,12 @@ public:
 
 	static bool InitializeMeshes();
 
-	void SetPosition(glm::vec3 position);
+	//void SetPosition(glm::vec3 position);
 	void Update(Game* game) override;
 	void DrawGeometry(class Renderer* renderer) override;
 	void DrawGeometryToShadowMap(class Renderer* renderer) override;
 
+	glm::vec3 GetPos();
 };
 
 #endif

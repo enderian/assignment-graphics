@@ -5,7 +5,10 @@
 #include "Treasure.h"
 #include "PlaneRG.h"
 #include "Tower.h"
+#include "TowerMed.h"
+#include "TowerBB.h"
 #include "CannonBall.h"
+#include "BulletBill.h"
 #include "Terrain.h"
 #include <glm/gtc/matrix_transform.inl>
 #include <SDL2/SDL.h>
@@ -34,8 +37,10 @@ bool Game::InitializeObjects()
 	Road::InitializeMeshes();
 	Treasure::InitializeMeshes();
 	PlaneRG::InitializeMeshes();
-	Tower::InitializeMeshes();
+	TowerMed::InitializeMeshes();
+	TowerBB::InitializeMeshes();
 	CannonBall::InitializeMeshes();
+	BulletBill::InitializeMeshes();
 	Terrain::InitializeMeshes();
 
 	m_terrain = new Terrain();
@@ -51,9 +56,11 @@ bool Game::InitializeObjects()
 
 	for(int i = 0; i < 3; i++)
 	{
-		auto tower = new Tower(time());
+		auto tower = new TowerMed(time());
 		this->m_towers.push_back(tower);
 	}
+
+	this->m_towers.push_back(new TowerBB(time()));
 
 	for (auto pos : game_tiles)
 	{
@@ -75,14 +82,9 @@ bool Game::InitializeObjects()
 	
 	plane_rg->SetPosition(plane_rg->pos);
 
-	test_tower = new Tower(time());
+	test_bill = new BulletBill();
 
-	test_tower->SetPosition(glm::vec3(4, 0, 4));
-	test_tower->SetUsed(true);
-
-	test_ball = new CannonBall();
-
-	test_ball->SetPosition(glm::vec3(3.99596, 3.8, 3.96968));
+	test_bill->SetPosition(glm::vec3(5, 2, 5));
 
 	return true;
 }
@@ -96,6 +98,7 @@ void Game::Render()
 {
 	m_renderer->RenderGeometry(this);
 	m_renderer->RenderShadowMaps(this);
+	m_renderer->RenderHud();
 	m_renderer->RenderToOuterRenderBuffer();
 }
 
@@ -116,9 +119,14 @@ void Game::Update(float elapsed)
 	{
 		tower->Update(this);
 	}
+	for (auto chest : m_treasures)
+	{
+		chest->Update(this);
+	}
 	plane_rg->Update(this);
-	test_ball->Update(this);
-	test_tower->Update(this);
+	/*test_ball->Update(this);
+	test_tower->Update(this);*/
+	//test_bill->Update(this);
 }
 
 void Game::DrawGeometry(Renderer* renderer)
@@ -145,8 +153,9 @@ void Game::DrawGeometry(Renderer* renderer)
 		projectile->DrawGeometry(renderer);
 	}
 	plane_rg->DrawGeometry(renderer);
-	test_ball->DrawGeometry(renderer);
-	test_tower->DrawGeometry(renderer);
+	/*test_ball->DrawGeometry(renderer);
+	test_tower->DrawGeometry(renderer);*/
+	test_bill->DrawGeometry(renderer);
 }
 
 void Game::DrawGeometryToShadowMap(Renderer* renderer)
@@ -173,8 +182,9 @@ void Game::DrawGeometryToShadowMap(Renderer* renderer)
 		projectile->DrawGeometryToShadowMap(renderer);
 	}
 	plane_rg->DrawGeometryToShadowMap(renderer);
-	test_ball->DrawGeometryToShadowMap(renderer);
-	test_tower->DrawGeometryToShadowMap(renderer);
+	/*test_ball->DrawGeometryToShadowMap(renderer);
+	test_tower->DrawGeometryToShadowMap(renderer);*/
+	test_bill->DrawGeometryToShadowMap(renderer);
 }
 
 void Game::SpawnPirate(float dt)
@@ -183,11 +193,20 @@ void Game::SpawnPirate(float dt)
 	this->m_pirates.push_back(pirate);
 }
 
-void Game::SpawnProjectile(glm::vec3 pos, glm::vec3 dir)
+void Game::SpawnProjectile(glm::vec3 pos, glm::vec3 dir, Tower* tower)
 {
-	auto projectile = new CannonBall(dir, time());
-	projectile->SetPosition(glm::vec3(pos.x - 0.00404, 3.8, pos.z - 0.03032));
-	this->m_projectiles.push_back(projectile);
+	if(dynamic_cast<TowerMed*>(tower))
+	{
+		auto projectile = new CannonBall(dir, time());
+		projectile->SetPosition(glm::vec3(pos.x - 0.00404, 3.8, pos.z - 0.03032));
+		this->m_projectiles.push_back(projectile);
+	}
+	else if(dynamic_cast<TowerBB*>(tower))
+	{
+		auto projectile = new BulletBill(dir, time());
+		projectile->SetPosition(glm::vec3(pos.x - 0.006565, 6.175, pos.z - 0.04927));
+		this->m_projectiles.push_back(projectile);
+	}
 }
 
 
@@ -197,9 +216,28 @@ void Game::DeployTower(glm::vec3 pos)
 	{
 		if (!t->IsUsed())
 		{
-			t->SetPosition(pos);
-			t->setUsed(true);
-			break;
+			if(dynamic_cast<TowerMed*>(t))
+			{
+				t->SetPosition(pos);
+				t->SetUsed(true);
+				break;
+			}
+		}
+	}
+}
+
+void Game::DeployTowerBB(glm::vec3 pos)
+{
+	for (Tower* t : m_towers)
+	{
+		if (!t->IsUsed())
+		{
+			if (dynamic_cast<TowerBB*>(t))
+			{
+				t->SetPosition(pos);
+				t->SetUsed(true);
+				break;
+			}
 		}
 	}
 }
@@ -210,7 +248,7 @@ bool Game::RemoveTower(glm::vec3 pos)
 	{
 		if(pos.x == t->GetPos().x && pos.z == t->GetPos().z && t->IsUsed())
 		{
-			t->setUsed(false);
+			t->SetUsed(false);
 			return true;
 		}
 	}
@@ -219,8 +257,13 @@ bool Game::RemoveTower(glm::vec3 pos)
 
 void Game::AddTower()
 {
-	auto tower = new Tower(time());
+	auto tower = new TowerMed(time());
 	this->m_towers.push_back(tower);
+}
+
+void Game::SetPirates(std::vector<Pirate*> m_pirates)
+{
+	this->m_pirates = m_pirates;
 }
 
 
@@ -234,3 +277,7 @@ std::vector<Pirate*> Game::GetPirates()
 	return this->m_pirates;
 }
 
+std::vector<Projectile*> Game::GetCannonBalls()
+{
+	return this->m_projectiles;
+}

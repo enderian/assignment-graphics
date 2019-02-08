@@ -1,6 +1,8 @@
 #include "Pirate.h"
 #include <glm/gtc/matrix_transform.inl>
 #include "OBJLoader.h"
+#include "Projectile.h"
+#include "CannonBall.h"
 #include <iostream>
 
 GeometricMesh* m_body_mesh;
@@ -87,6 +89,23 @@ void Pirate::Update(Game* game)
 	m_arm_transformation_matrix_normal = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_arm_transformation_matrix))));
 	m_left_foot_transformation_matrix_normal = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_left_foot_transformation_matrix))));
 	m_right_foot_transformation_matrix_normal = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_right_foot_transformation_matrix))));
+
+	std::vector<Projectile*> m_projectiles = game->GetCannonBalls();
+	glm::vec3 center(pos.x*(-.071464) + pos.x, pos.y*1.40196 + pos.y, pos.z*(-.51288) + pos.z);
+	for (int i = 0; i < m_projectiles.size(); i++)
+	{
+		int erase = 0;
+		glm::vec3 p_pos = m_projectiles[i]->GetPos();
+		glm::vec3 dif(glm::abs(center - p_pos));
+		if(dif.x < 0.1 && dif.y < 0.1 && dif.z < 0.1)
+		{
+			if(dynamic_cast<CannonBall*>(m_projectiles[i]))
+			{
+				health -= 25;
+				printf("Here\n");
+			}
+		}
+	}
 }
 
 void Pirate::DrawGeometry(Renderer* renderer)

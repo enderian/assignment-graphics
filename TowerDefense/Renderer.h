@@ -66,6 +66,7 @@ protected:
 	ShaderProgram m_geometry_rendering_program;
 	ShaderProgram m_postprocess_program;
 	ShaderProgram m_spot_light_shadow_map_program;
+	ShaderProgram m_hud_program;
 
 public:
 	Renderer();
@@ -78,6 +79,7 @@ public:
 	void RenderShadowMaps(Renderable* geometries);
 	void RenderGeometry(Renderable* geometries);
 	void PostRender();
+	void RenderHud();
 	void RenderToOuterRenderBuffer();
 
 	void DrawGeometryNode(class GeometryNode* node, glm::mat4 model_matrix, glm::mat4 normal_matrix);
