@@ -171,13 +171,13 @@ bool Renderer::InitRenderingTechniques()
 	m_spot_light_shadow_map_program.LoadUniform("uniform_model_matrix");
 	
 	//Hud Program
-	vertex_shader_path = "../assets/Shaders/hud.vert";
+	/*vertex_shader_path = "../assets/Shaders/hud.vert";
 	fragment_shader_path = "../assets/Shaders/hud.frag";
 	m_hud_program.LoadVertexShaderFromFile(vertex_shader_path.c_str());
 	m_hud_program.LoadFragmentShaderFromFile(fragment_shader_path.c_str());
 	initialized = initialized && m_hud_program.CreateProgram();
 	m_hud_program.LoadUniform("uniform_texture");
-	m_hud_program.LoadUniform("uniform_projection_inverse_matrix");
+	m_hud_program.LoadUniform("uniform_projection_inverse_matrix");*/
 	
 
 	return initialized;
@@ -441,9 +441,9 @@ void Renderer::DrawGeometryNodeToShadowMap(GeometryNode* node, glm::mat4 model_m
 
 
 //THIS DOES NOT WORK, I'M TRYING TO FIGURE IT OUT
-void Renderer::RenderHud()
+/*void Renderer::RenderHud()
 {
-	/*glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, m_screen_width, m_screen_height);
 
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -464,7 +464,7 @@ void Renderer::RenderHud()
 
 	glBindVertexArray(0);
 
-	m_hud_program.Unbind();*/
+	m_hud_program.Unbind();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, m_screen_width, m_screen_height);
 
@@ -504,7 +504,7 @@ void Renderer::RenderHud()
 
 	// Unbind the post processing program
 	m_hud_program.Unbind();
-}
+}*/
 
 
 void Renderer::RenderToOuterRenderBuffer()

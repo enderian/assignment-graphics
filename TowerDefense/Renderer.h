@@ -79,7 +79,7 @@ public:
 	void RenderShadowMaps(Renderable* geometries);
 	void RenderGeometry(Renderable* geometries);
 	void PostRender();
-	void RenderHud();
+	//void RenderHud();
 	void RenderToOuterRenderBuffer();
 
 	void DrawGeometryNode(class GeometryNode* node, glm::mat4 model_matrix, glm::mat4 normal_matrix);

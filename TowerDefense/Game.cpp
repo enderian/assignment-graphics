@@ -98,7 +98,7 @@ void Game::Render()
 {
 	m_renderer->RenderGeometry(this);
 	m_renderer->RenderShadowMaps(this);
-	m_renderer->RenderHud();
+	//m_renderer->RenderHud();
 	m_renderer->RenderToOuterRenderBuffer();
 }
 

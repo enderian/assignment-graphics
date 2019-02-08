@@ -121,7 +121,6 @@ int main(int argc, char *argv[])
 	float start_of_additions = game->time();
 	boolean allowed = false;
 	double passed;
-	game->SpawnPirate(game->time());
 	// Wait for user exit
 	while (quit == false)
 	{
@@ -244,7 +243,7 @@ int main(int argc, char *argv[])
 		passed = (game->time() - start_of_spawns);
 		if(passed >= 10)
 		{
-			//game->SpawnPirate(game->time());
+			game->SpawnPirate(game->time());
 			start_of_spawns = game->time();
 		}
 		if((game->time() - start_of_towers) >= 30)
