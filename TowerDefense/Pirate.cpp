@@ -96,13 +96,16 @@ void Pirate::Update(Game* game)
 	{
 		int erase = 0;
 		glm::vec3 p_pos = m_projectiles[i]->GetPos();
+		//std::cout << p_pos.x << " " << p_pos.y << " " << p_pos.z << std::endl;
 		glm::vec3 dif(glm::abs(center - p_pos));
-		if(dif.x < 0.1 && dif.y < 0.1 && dif.z < 0.1)
+		//std::cout << dif.x << " " << dif.y << " " << dif.z << std::endl;
+		if(dif.x < .52 && dif.y < 1.41 && dif.z < 3.01)
 		{
-			if(dynamic_cast<CannonBall*>(m_projectiles[i]))
+			if(dynamic_cast<CannonBall*>(m_projectiles[i]) && !m_projectiles[i]->GetHit())
 			{
 				health -= 25;
-				printf("Here\n");
+				printf("KAPPA\n");
+				m_projectiles[i]->SetHit(true);
 			}
 		}
 	}
