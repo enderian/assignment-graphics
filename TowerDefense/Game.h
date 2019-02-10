@@ -64,6 +64,8 @@ private:
 	std::vector<class Tower*> m_towers;
 	std::vector<class Projectile*> m_projectiles;
 
+	bool finished = false, delete_all = false;
+
 public:
 	Game();
 	~Game();
@@ -89,12 +91,13 @@ public:
 
 	void Update(float elapsed);
 	void Render();
-	void SpawnPirate(float dt);
+	void SpawnPirate(float dt, glm::vec3 pos);
 	void SpawnProjectile(glm::vec3 pos, glm::vec3 dir, Tower* tower);
 	void DeployTower(glm::vec3 pos);
 	void DeployTowerBB(glm::vec3 pos);
 	bool RemoveTower(glm::vec3 pos);
 	void AddTower();
+	void GameOver();
 
 	void SetPirates(std::vector<Pirate*> m_pirates);
 
@@ -104,6 +107,7 @@ public:
 	std::vector<Tower*> GetTowers();
 	std::vector<Pirate*> GetPirates();
 	std::vector<Projectile*> GetCannonBalls();
+	bool GetGameOver();
 
 };
 

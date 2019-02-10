@@ -55,3 +55,8 @@ void TreasureContainer::DrawGeometryToShadowMap(Renderer* renderer)
 	if (m_coins > 0) m_treasure_2->DrawGeometryToShadowMap(renderer);
 	if (m_coins > 1) m_treasure_3->DrawGeometryToShadowMap(renderer);
 }
+
+int TreasureContainer::GetCoins()
+{
+	return this->m_coins;
+}

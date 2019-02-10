@@ -27,6 +27,8 @@ SDL_Event event;
 
 Game * game = nullptr;
 
+bool over = false;
+
 void func()
 {
 	system("pause");
@@ -240,22 +242,37 @@ int main(int argc, char *argv[])
 		float dt = chrono::duration <float>(simulation_end - simulation_start).count(); // in seconds
 		simulation_start = chrono::steady_clock::now();
 
-		passed = (game->time() - start_of_spawns);
-		if(passed >= 10)
+		if (game->GetGameOver())
 		{
-			game->SpawnPirate(game->time());
-			start_of_spawns = game->time();
+			if(!over)
+			{
+				for (int i = 0; i < game_tiles->length(); i++)
+				{
+					game->SpawnPirate(game->time(), game_tiles[i]);
+					printf("hi\n");
+				}
+				over = true;
+			}
 		}
-		if((game->time() - start_of_towers) >= 30)
+		else
 		{
-			allowed = true;
-			start_of_towers = game->time();
-		}
+			passed = (game->time() - start_of_spawns);
+			if (passed >= 10)
+			{
+				game->SpawnPirate(game->time(), glm::vec3(0));
+				start_of_spawns = game->time();
+			}
+			if ((game->time() - start_of_towers) >= 30)
+			{
+				allowed = true;
+				start_of_towers = game->time();
+			}
 
-		if((game->time() - start_of_additions) >= 120)
-		{
-			game->AddTower();
-			start_of_additions = game->time();
+			if ((game->time() - start_of_additions) >= 120)
+			{
+				game->AddTower();
+				start_of_additions = game->time();
+			}
 		}
 
 		// Update
