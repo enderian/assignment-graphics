@@ -171,7 +171,6 @@ int main(int argc, char *argv[])
 					if(place.w)
 					{
 						game->deploy_tower(glm::vec3(place.x, place.y, place.z));
-						//if (!res) allowed = false;
 					}
 				}
 				else if (event.key.keysym.sym == SDLK_y)
@@ -180,53 +179,8 @@ int main(int argc, char *argv[])
 					if (place.w)
 					{
 						game->deploy_tower_bb(glm::vec3(place.x, place.y, place.z));
-						//if (!res) allowed = false;
 					}
 				}
-			}
-			else if (event.type == SDL_KEYUP)
-			{
-				if (event.key.keysym.sym == SDLK_w || event.key.keysym.sym == SDLK_UP)
-				{
-					game->renderer()->camera_move_forward(false);
-				}
-				else if (event.key.keysym.sym == SDLK_s || event.key.keysym.sym == SDLK_DOWN)
-				{
-					game->renderer()->camera_move_back_ward(false);
-				}
-				else if (event.key.keysym.sym == SDLK_a || event.key.keysym.sym == SDLK_LEFT)
-				{
-					game->renderer()->CameraMoveLeft(false);
-				}
-				else if (event.key.keysym.sym == SDLK_d || event.key.keysym.sym == SDLK_RIGHT)
-				{
-					game->renderer()->CameraMoveRight(false);
-				}
-			}
-			else if (event.type == SDL_MOUSEMOTION)
-			{
-				int x = event.motion.x;
-				int y = event.motion.y;
-				if (mouse_button_pressed)
-				{
-					game->renderer()->CameraLook(glm::vec2(x, y) - prev_mouse_position);
-					prev_mouse_position = glm::vec2(x, y);
-				}
-			}
-			else if (event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP)
-			{
-				if (event.button.button == SDL_BUTTON_LEFT)
-				{
-					int x = event.button.x;
-					int y = event.button.y;
-					mouse_button_pressed = (event.type == SDL_MOUSEBUTTONDOWN);
-					prev_mouse_position = glm::vec2(x, y);
-				}
-			}
-			else if (event.type == SDL_MOUSEWHEEL)
-			{
-				int x = event.wheel.x;
-				int y = event.wheel.y;
 			}
 			else if (event.type == SDL_WINDOWEVENT)
 			{
