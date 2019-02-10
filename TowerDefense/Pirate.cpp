@@ -1,8 +1,7 @@
 #include "Pirate.h"
-#include <glm/gtc/matrix_transform.inl>
+#include <glm/gtc/matrix_transform.hpp>
 #include "OBJLoader.h"
 #include "Projectile.h"
-#include "CannonBall.h"
 #include <iostream>
 
 GeometricMesh* m_body_mesh;
@@ -10,7 +9,7 @@ GeometricMesh* m_arm_mesh;
 GeometricMesh* m_left_foot_mesh;
 GeometricMesh* m_right_foot_mesh;
 
-Pirate::Pirate()
+Pirate::Pirate(): Collidable(PIRATE_SCALE * 12.87075f)
 {
 	m_body = new GeometryNode();
 	m_body->Init(m_body_mesh);
@@ -20,21 +19,14 @@ Pirate::Pirate()
 	m_left_foot->Init(m_left_foot_mesh);
 	m_right_foot = new GeometryNode();
 	m_right_foot->Init(m_right_foot_mesh);
+
+	m_health = PIRATE_INITIAL_HEALTH;
 }
 
-Pirate::Pirate(float spawn_time)
+Pirate::Pirate(float spawn_time): Pirate()
 {
-	m_body = new GeometryNode();
-	m_body->Init(m_body_mesh);
-	m_arm = new GeometryNode();
-	m_arm->Init(m_arm_mesh);
-	m_left_foot = new GeometryNode();
-	m_left_foot->Init(m_left_foot_mesh);
-	m_right_foot = new GeometryNode();
-	m_right_foot->Init(m_right_foot_mesh);
-	this->spawn_time = spawn_time;
+	m_spawn_time = spawn_time;
 }
-
 
 Pirate::~Pirate()
 {
@@ -44,9 +36,8 @@ Pirate::~Pirate()
 	delete m_right_foot;
 }
 
-bool Pirate::InitializeMeshes()
+bool Pirate::initialize_meshes(OBJLoader& loader)
 {
-	OBJLoader loader;
 	m_body_mesh = loader.load("../assets/Pirate/pirate_body.obj");
 	m_arm_mesh = loader.load("../assets/Pirate/pirate_arm.obj");
 	m_left_foot_mesh = loader.load("../assets/Pirate/pirate_left_foot.obj");
@@ -54,33 +45,42 @@ bool Pirate::InitializeMeshes()
 	return true;
 }
 
-void Pirate::Update(Game* game)
+void Pirate::update(Game* game)
 {
-	m_current_tile = std::min(int((game->time() - spawn_time) / SECONDS_PER_TILE / SECONDS_PER_TILE), 28);
+	//Calculate the current tile.
+
+	int current_tile = (game->time() - m_spawn_time) / PIRATE_SPEED;
+	auto alpha = fmod(game->time() - m_spawn_time, PIRATE_SPEED) / PIRATE_SPEED;
 
 	auto translate = glm::mat4(1);
-	auto scale = glm::scale(glm::mat4(1), glm::vec3(0.12f));
+	auto scale = glm::scale(glm::mat4(1), glm::vec3(PIRATE_SCALE));
 	auto rotation = glm::mat4(1);
 
-	if (m_current_tile == 28)
+	glm::vec3 position;
+
+	if (current_tile >= 28)
 	{
-		translate = glm::translate(translate, game_tiles[m_current_tile] * glm::vec3(4, 1, 4));
-		pos = game_tiles[m_current_tile];
-	} else
+		current_tile = 28;
+		position = game_tiles[current_tile];
+		translate = glm::translate(translate, position);
+		rotation = glm::inverse(glm::lookAt(game_tiles[current_tile - 1], game_tiles[current_tile], glm::vec3(0, 1, 0)));
+	} 
+	else
 	{
-		const float alpha = std::fmod((game->time() - spawn_time) / SECONDS_PER_TILE, SECONDS_PER_TILE) / SECONDS_PER_TILE;
-		translate = glm::translate(translate, glm::mix(game_tiles[m_current_tile], game_tiles[m_current_tile + 1], alpha) * glm::vec3(4, 1, 4));
-		rotation = glm::inverse(glm::lookAt(game_tiles[m_current_tile], game_tiles[m_current_tile + 1], glm::vec3(0, 1, 0)));
-		pos = glm::mix(game_tiles[m_current_tile], game_tiles[m_current_tile + 1], alpha);
+		position = glm::mix(game_tiles[current_tile], game_tiles[current_tile + 1], alpha);
+		translate = glm::translate(translate, position);
+		rotation = glm::inverse(glm::lookAt(game_tiles[current_tile], game_tiles[current_tile + 1], glm::vec3(0, 1, 0)));
 	}
 
-	m_transformation_matrix = translate * scale * rotation;
+	set_position(position);
+	m_transformation_matrix = rotation * translate * scale;
 
 	m_body_transformation_matrix = m_transformation_matrix * glm::mat4(1);
-	auto hand_rotation = glm::rotate(glm::mat4(1), glm::sin((game->time() - spawn_time) * 2) * 0.1f, glm::vec3(1, 0, 0));
+
+	auto hand_rotation = glm::rotate(glm::mat4(1), glm::sin((game->time() - m_spawn_time) * 2) * 0.1f, glm::vec3(1, 0, 0));
 	m_arm_transformation_matrix = m_transformation_matrix * glm::translate(glm::mat4(1), glm::vec3(4.5, 12, 0)) * hand_rotation;
 
-	auto feet_rotation = glm::rotate(glm::mat4(1), glm::sin((game->time() - spawn_time) * 4), glm::vec3(1, 0, 0));
+	auto feet_rotation = glm::rotate(glm::mat4(1), glm::sin((game->time() - m_spawn_time) * 4), glm::vec3(1, 0, 0));
 	m_left_foot_transformation_matrix = m_transformation_matrix * feet_rotation * glm::translate(glm::mat4(1), glm::vec3(-4, 0, -2));
 	feet_rotation = glm::inverse(feet_rotation);
 	m_right_foot_transformation_matrix = m_transformation_matrix * feet_rotation * glm::translate(glm::mat4(1), glm::vec3(4, 0, -2));
@@ -90,25 +90,14 @@ void Pirate::Update(Game* game)
 	m_left_foot_transformation_matrix_normal = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_left_foot_transformation_matrix))));
 	m_right_foot_transformation_matrix_normal = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_right_foot_transformation_matrix))));
 
-	std::vector<Projectile*> m_projectiles = game->GetCannonBalls();
-	glm::vec3 center(pos.x*(-.071464) + pos.x, pos.y*1.40196 + pos.y, pos.z*(-.51288) + pos.z);
-	for (int i = 0; i < m_projectiles.size(); i++)
+	//Handle death scenario.
+	if (m_health <= 0)
 	{
-		int erase = 0;
-		glm::vec3 p_pos = m_projectiles[i]->GetPos();
-		glm::vec3 dif(glm::abs(center - p_pos));
-		if(dif.x < 0.1 && dif.y < 0.1 && dif.z < 0.1)
-		{
-			if(dynamic_cast<CannonBall*>(m_projectiles[i]))
-			{
-				health -= 25;
-				printf("Here\n");
-			}
-		}
+		//game->KillPirate(this);
 	}
 }
 
-void Pirate::DrawGeometry(Renderer* renderer)
+void Pirate::draw_geometry(Renderer* renderer)
 {
 	renderer->DrawGeometryNode(m_body, m_body_transformation_matrix, m_body_transformation_matrix_normal);
 	renderer->DrawGeometryNode(m_arm, m_arm_transformation_matrix, m_arm_transformation_matrix_normal);
@@ -116,7 +105,7 @@ void Pirate::DrawGeometry(Renderer* renderer)
 	renderer->DrawGeometryNode(m_right_foot, m_right_foot_transformation_matrix, m_right_foot_transformation_matrix_normal);
 }
 
-void Pirate::DrawGeometryToShadowMap(Renderer* renderer)
+void Pirate::draw_geometry_to_shadow_map(Renderer* renderer)
 {
 	renderer->DrawGeometryNodeToShadowMap(m_body, m_body_transformation_matrix, m_body_transformation_matrix_normal);
 	renderer->DrawGeometryNodeToShadowMap(m_arm, m_arm_transformation_matrix, m_arm_transformation_matrix_normal);
@@ -124,7 +113,7 @@ void Pirate::DrawGeometryToShadowMap(Renderer* renderer)
 	renderer->DrawGeometryNodeToShadowMap(m_right_foot, m_right_foot_transformation_matrix, m_right_foot_transformation_matrix_normal);
 }
 
-glm::vec3 Pirate::GetPos()
+glm::vec3 Pirate::get_center()
 {
-	return this->pos;
+	return position() + PIRATE_SCALE * glm::vec3(-0.5957, 11.683, -4.274);
 }

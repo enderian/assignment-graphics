@@ -5,7 +5,7 @@
 #include "GLEW\glew.h"
 #include "Renderer.h"
 #include "Game.h"
-#include "PlaneRG.h"
+#include "SelectionPlane.h"
 #include "freeglut/freeglut.h"
 
 using namespace std;
@@ -80,8 +80,8 @@ bool init()
 	glGetError();
 
 	game = new Game();
-	bool engine_initialized = game->InitializeRenderer(SCREEN_WIDTH, SCREEN_HEIGHT);
-	engine_initialized |= game->InitializeObjects();
+	bool engine_initialized = game->initialize_renderer(SCREEN_WIDTH, SCREEN_HEIGHT);
+	engine_initialized |= game->initialize_objects();
 
 	//atexit(func);
 	
@@ -116,9 +116,6 @@ int main(int argc, char *argv[])
 
 	auto simulation_start = chrono::steady_clock::now();
 
-	float start_of_spawns = game->time();
-	float start_of_towers = game->time();
-	float start_of_additions = game->time();
 	boolean allowed = false;
 	double passed;
 	// Wait for user exit
@@ -135,52 +132,35 @@ int main(int argc, char *argv[])
 			{
 				// Key down events
 				if (event.key.keysym.sym == SDLK_ESCAPE) quit = true;
-				//else if (event.key.keysym.sym == SDLK_r) game->renderer()->ReloadShaders();
-				//else if (event.key.keysym.sym == SDLK_t) game->renderer()->SetRenderingMode(Renderer::RENDERING_MODE::TRIANGLES);
-				else if (event.key.keysym.sym == SDLK_l) game->renderer()->SetRenderingMode(Renderer::RENDERING_MODE::LINES);
-				else if (event.key.keysym.sym == SDLK_p) game->renderer()->SetRenderingMode(Renderer::RENDERING_MODE::POINTS);
 				else if (event.key.keysym.sym == SDLK_UP)
 				{
-					game->getPlaneRG()->moveUp();
+					game->selection_plane()->move_up();
 				}
 				else if (event.key.keysym.sym == SDLK_DOWN)
 				{
-					game->getPlaneRG()->moveDown();
+					game->selection_plane()->move_down();
 				}	
 				else if (event.key.keysym.sym == SDLK_LEFT)
 				{
-					game->getPlaneRG()->moveLeft();
+					game->selection_plane()->move_left();
 				}
 				else if (event.key.keysym.sym == SDLK_RIGHT)
 				{
-					game->getPlaneRG()->moveRight();
+					game->selection_plane()->move_right();
 				}
 				else if (event.key.keysym.sym == SDLK_r)
 				{
 					if(allowed)
 					{
-						glm::vec4 place = game->getPlaneRG()->getPos();
-						bool res = game->RemoveTower(glm::vec3(place.x, place.y, place.z));
+						glm::vec3 place = game->selection_plane()->position();
+						bool res = game->remove_tower(glm::vec3(place.x, place.y, place.z));
 						if (res) allowed = false;
 					}
 				}
 				else if (event.key.keysym.sym == SDLK_t)
 				{
-					glm::vec4 place = game->getPlaneRG()->getPos();
-					if(place.w)
-					{
-						game->DeployTower(glm::vec3(place.x, place.y, place.z));
-						//if (!res) allowed = false;
-					}
-				}
-				else if (event.key.keysym.sym == SDLK_y)
-				{
-					glm::vec4 place = game->getPlaneRG()->getPos();
-					if (place.w)
-					{
-						game->DeployTowerBB(glm::vec3(place.x, place.y, place.z));
-						//if (!res) allowed = false;
-					}
+					glm::vec3 place = game->selection_plane()->position();
+					game->deploy_tower(place);
 				}
 			}
 			else if (event.type == SDL_KEYUP)
@@ -240,27 +220,9 @@ int main(int argc, char *argv[])
 		float dt = chrono::duration <float>(simulation_end - simulation_start).count(); // in seconds
 		simulation_start = chrono::steady_clock::now();
 
-		passed = (game->time() - start_of_spawns);
-		if(passed >= 10)
-		{
-			game->SpawnPirate(game->time());
-			start_of_spawns = game->time();
-		}
-		if((game->time() - start_of_towers) >= 30)
-		{
-			allowed = true;
-			start_of_towers = game->time();
-		}
-
-		if((game->time() - start_of_additions) >= 120)
-		{
-			game->AddTower();
-			start_of_additions = game->time();
-		}
-
 		// Update
-		game->Update(dt);
-		game->Render();
+		game->update(dt);
+		game->render();
 		
 		//Update screen (swap buffer for double buffering)
 		SDL_GL_SwapWindow(window);

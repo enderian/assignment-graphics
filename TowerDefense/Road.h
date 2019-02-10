@@ -5,6 +5,8 @@
 #include "Renderer.h"
 #include "Game.h"
 
+class OBJLoader;
+
 class Road: public GameObject
 {
 private:
@@ -17,12 +19,12 @@ public:
 	Road();
 	virtual ~Road();
 
-	static bool InitializeMeshes();
+	static bool initialize_meshes(OBJLoader& loader);
 
-	void SetPosition(glm::vec3 position);
-	void Update(Game* game) override;
-	void DrawGeometry(class Renderer* renderer) override;
-	void DrawGeometryToShadowMap(class Renderer* renderer) override;
+	void set_position(const glm::vec3& highp_vec3) override;
+	void update(Game* game) override;
+	void draw_geometry(class Renderer* renderer) override;
+	void draw_geometry_to_shadow_map(class Renderer* renderer) override;
 };
 
 #endif // ROAD_H

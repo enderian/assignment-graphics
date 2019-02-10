@@ -3,15 +3,10 @@
 #include "Pirate.h"
 #include "Road.h"
 #include "Treasure.h"
-#include "PlaneRG.h"
 #include "Tower.h"
-#include "TowerMed.h"
-#include "TowerBB.h"
 #include "CannonBall.h"
-#include "BulletBill.h"
+#include "SelectionPlane.h"
 #include "Terrain.h"
-#include <glm/gtc/matrix_transform.inl>
-#include <SDL2/SDL.h>
 #include "OBJLoader.h"
 #include <iostream>
 
@@ -25,76 +20,65 @@ Game::~Game()
 	delete m_renderer;
 }
 
-bool Game::InitializeRenderer(int SCREEN_WIDTH, int SCREEN_HEIGHT)
+bool Game::initialize_renderer(int screen_width, int screen_height)
 {
-	return m_renderer->Init(SCREEN_WIDTH, SCREEN_HEIGHT);
+	return m_renderer->Init(screen_width, screen_height);
 }
 
-bool Game::InitializeObjects()
+bool Game::initialize_objects()
 {
 	//Initialize the meshes into memory.
-	Pirate::InitializeMeshes();
-	Road::InitializeMeshes();
-	Treasure::InitializeMeshes();
-	PlaneRG::InitializeMeshes();
-	TowerMed::InitializeMeshes();
-	TowerBB::InitializeMeshes();
-	CannonBall::InitializeMeshes();
-	BulletBill::InitializeMeshes();
-	Terrain::InitializeMeshes();
+	OBJLoader loader;
+	Pirate::initialize_meshes(loader);
+	Road::initialize_meshes(loader);
+	Treasure::initialize_meshes(loader);
+	SelectionPlane::initialize_meshes(loader);
+	CannonBall::initialize_meshes(loader);
+	Terrain::initialize_meshes(loader);
+	Tower::initialize_meshes(loader);
 
 	m_terrain = new Terrain();
-
-	m_terrain->SetPosition(glm::vec3(18, -0.01, 18));
+	m_terrain->set_position(glm::vec3(18, -0.01, 18));
 
 	//Create an empty pirate vector.
 	this->m_pirates = std::vector<class Pirate*>();
-
 	this->m_towers = std::vector<class Tower*>();
-
 	this->m_projectiles = std::vector<class Projectile*>();
 
 	for(int i = 0; i < 3; i++)
 	{
-		auto tower = new TowerMed(time());
+		auto tower = new Tower(0.0f);
 		this->m_towers.push_back(tower);
 	}
-
-	this->m_towers.push_back(new TowerBB(time()));
 
 	for (auto pos : game_tiles)
 	{
 		auto road = new Road();
-		road->SetPosition(pos);
+		road->set_position(pos);
 		this->m_roads.push_back(road);
 	}
 
 	this->m_treasures = std::vector<class Treasure*>();
 
-	for (auto tr_pos : treasure_locs)
+	for (auto tr_pos : treasure_locations)
 	{
 		auto treasure = new Treasure();
-		treasure->SetPosition(tr_pos);
+		treasure->set_position(tr_pos);
 		this->m_treasures.push_back(treasure);
 	}
 
-	plane_rg = new PlaneRG();
-	
-	plane_rg->SetPosition(plane_rg->pos);
-
-	test_bill = new BulletBill();
-
-	test_bill->SetPosition(glm::vec3(5, 2, 5));
+	m_selection_plane = new SelectionPlane();
+	m_selection_plane->set_position(m_selection_plane->position());
 
 	return true;
 }
 
-bool Game::InitializeLogic()
+bool Game::initialize_logic()
 {
 	return true;
 }
 
-void Game::Render()
+void Game::render()
 {
 	m_renderer->RenderGeometry(this);
 	m_renderer->RenderShadowMaps(this);
@@ -102,182 +86,166 @@ void Game::Render()
 	m_renderer->RenderToOuterRenderBuffer();
 }
 
-void Game::Update(float elapsed)
+void Game::update(float elapsed)
 {
 	m_time += elapsed;
+	m_last_frame = elapsed;
+
+	//Process new pirates and tower allowance.
+	auto time_passed = (m_time - m_next_spawn);
+	if (time_passed >= rand() % 3 + 9.5)
+	{
+		spawn_pirate(time());
+		m_next_spawn = m_time;
+	}
+	if ((m_time - m_next_allow_tower) >= 30)
+	{
+		m_next_allow_tower = m_time;
+	}
+	if ((m_time - m_next_addition) >= 120)
+	{
+		m_next_addition = m_time;
+	}
 
 	//Update all the pirates.
 	for (auto pirate : m_pirates)
 	{
-		pirate->Update(this);
+		pirate->update(this);
 	}
 	for (auto projectile : m_projectiles)
 	{
-		projectile->Update(this);
+		projectile->update(this);
 	}
 	for (auto tower : m_towers)
 	{
-		tower->Update(this);
+		tower->update(this);
 	}
 	for (auto chest : m_treasures)
 	{
-		chest->Update(this);
+		chest->update(this);
 	}
-	plane_rg->Update(this);
-	/*test_ball->Update(this);
-	test_tower->Update(this);*/
-	//test_bill->Update(this);
+
+	m_selection_plane->update(this);
 }
 
-void Game::DrawGeometry(Renderer* renderer)
+void Game::draw_geometry(Renderer* renderer)
 {
-	m_terrain->DrawGeometry(renderer);
+	m_terrain->draw_geometry(renderer);
 	for (auto pirate : m_pirates)
 	{
-		pirate->DrawGeometry(renderer);
+		pirate->draw_geometry(renderer);
 	}
 	for (auto road : m_roads)
 	{
-		road->DrawGeometry(renderer);
+		road->draw_geometry(renderer);
 	}
 	for (auto treasure : m_treasures)
 	{
-		treasure->DrawGeometry(renderer);
+		treasure->draw_geometry(renderer);
 	}
 	for (auto tower : m_towers)
 	{
-		if(tower->IsUsed()) tower->DrawGeometry(renderer);
+		if(tower->used()) tower->draw_geometry(renderer);
 	}
 	for (auto projectile : m_projectiles)
 	{
-		projectile->DrawGeometry(renderer);
+		projectile->draw_geometry(renderer);
 	}
-	plane_rg->DrawGeometry(renderer);
-	/*test_ball->DrawGeometry(renderer);
-	test_tower->DrawGeometry(renderer);*/
-	test_bill->DrawGeometry(renderer);
+	m_selection_plane->draw_geometry(renderer);
 }
 
-void Game::DrawGeometryToShadowMap(Renderer* renderer)
+void Game::draw_geometry_to_shadow_map(Renderer* renderer)
 {
-	m_terrain->DrawGeometryToShadowMap(renderer);
+	m_terrain->draw_geometry_to_shadow_map(renderer);
 	for (auto pirate : m_pirates)
 	{
-		pirate->DrawGeometryToShadowMap(renderer);
+		pirate->draw_geometry_to_shadow_map(renderer);
 	}
 	for (auto road : m_roads)
 	{
-		road->DrawGeometryToShadowMap(renderer);
+		road->draw_geometry_to_shadow_map(renderer);
 	}
 	for (auto treasure : m_treasures)
 	{
-		treasure->DrawGeometryToShadowMap(renderer);
+		treasure->draw_geometry_to_shadow_map(renderer);
 	}
 	for (auto tower : m_towers)
 	{
-		if (tower->IsUsed()) tower->DrawGeometryToShadowMap(renderer);
+		if (tower->used()) tower->draw_geometry_to_shadow_map(renderer);
 	}
 	for (auto projectile : m_projectiles)
 	{
-		projectile->DrawGeometryToShadowMap(renderer);
+		projectile->draw_geometry_to_shadow_map(renderer);
 	}
-	plane_rg->DrawGeometryToShadowMap(renderer);
-	/*test_ball->DrawGeometryToShadowMap(renderer);
-	test_tower->DrawGeometryToShadowMap(renderer);*/
-	test_bill->DrawGeometryToShadowMap(renderer);
+	m_selection_plane->draw_geometry_to_shadow_map(renderer);
 }
 
-void Game::SpawnPirate(float dt)
+void Game::spawn_pirate(float dt)
 {
 	auto pirate = new Pirate(dt);
 	this->m_pirates.push_back(pirate);
 }
 
-void Game::SpawnProjectile(glm::vec3 pos, glm::vec3 dir, Tower* tower)
+void Game::spawn_projectile(glm::vec3 pos, glm::vec3 dir, Tower* tower)
 {
-	if(dynamic_cast<TowerMed*>(tower))
+	if(dynamic_cast<Tower*>(tower))
 	{
-		auto projectile = new CannonBall(dir, time());
-		projectile->SetPosition(glm::vec3(pos.x - 0.00404, 3.8, pos.z - 0.03032));
-		this->m_projectiles.push_back(projectile);
-	}
-	else if(dynamic_cast<TowerBB*>(tower))
-	{
-		auto projectile = new BulletBill(dir, time());
-		projectile->SetPosition(glm::vec3(pos.x - 0.006565, 6.175, pos.z - 0.04927));
+		auto projectile = new CannonBall(pos, dir, time());
 		this->m_projectiles.push_back(projectile);
 	}
 }
 
 
-void Game::DeployTower(glm::vec3 pos)
+void Game::deploy_tower(glm::vec3 pos)
 {
 	for (Tower* t : m_towers)
 	{
-		if (!t->IsUsed())
+		if (!t->used())
 		{
-			if(dynamic_cast<TowerMed*>(t))
+			if(dynamic_cast<Tower*>(t))
 			{
-				t->SetPosition(pos);
-				t->SetUsed(true);
+				t->set_position(pos);
+				t->set_used(true);
 				break;
 			}
 		}
 	}
 }
 
-void Game::DeployTowerBB(glm::vec3 pos)
-{
-	for (Tower* t : m_towers)
-	{
-		if (!t->IsUsed())
-		{
-			if (dynamic_cast<TowerBB*>(t))
-			{
-				t->SetPosition(pos);
-				t->SetUsed(true);
-				break;
-			}
-		}
-	}
-}
-
-bool Game::RemoveTower(glm::vec3 pos)
+bool Game::remove_tower(glm::vec3 pos)
 {
 	for (Tower* t: m_towers)
 	{
-		if(pos.x == t->GetPos().x && pos.z == t->GetPos().z && t->IsUsed())
+		if(pos.x == t->position().x && pos.z == t->position().z && t->used())
 		{
-			t->SetUsed(false);
+			t->set_used(false);
 			return true;
 		}
 	}
 	return false;
 }
 
-void Game::AddTower()
+void Game::add_tower()
 {
-	auto tower = new TowerMed(time());
+	auto tower = new Tower(time());
 	this->m_towers.push_back(tower);
 }
 
-void Game::SetPirates(std::vector<Pirate*> m_pirates)
+void Game::set_pirates(std::vector<Pirate*> m_pirates)
 {
 	this->m_pirates = m_pirates;
 }
 
-
-std::vector<Tower*> Game::GetTowers()
+void Game::kill_pirate(Pirate* pirate)
 {
-	return this->m_towers;
+	auto it = std::find(m_pirates.begin(), m_pirates.end(), pirate);
+	if (it != m_pirates.end())
+		m_pirates.erase(it);
 }
 
-std::vector<Pirate*> Game::GetPirates()
+void Game::kill_projectile(Projectile* projectile)
 {
-	return this->m_pirates;
-}
-
-std::vector<Projectile*> Game::GetCannonBalls()
-{
-	return this->m_projectiles;
+	auto it = std::find(m_projectiles.begin(), m_projectiles.end(), projectile);
+	if (it != m_projectiles.end())
+		m_projectiles.erase(it);
 }

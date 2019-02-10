@@ -98,7 +98,7 @@ public:
 class Renderable
 {
 public:
-	virtual void DrawGeometry(class Renderer* renderer) = 0;
-	virtual void DrawGeometryToShadowMap(class Renderer* renderer) = 0;
+	virtual void draw_geometry(class Renderer* renderer) = 0;
+	virtual void draw_geometry_to_shadow_map(class Renderer* renderer) = 0;
 };
 #endif // RENDERER_H

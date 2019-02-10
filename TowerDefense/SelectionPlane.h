@@ -1,8 +1,5 @@
-#ifndef TOWER_H
-#define TOWER_H
-
-#define TOWER_SCALE 0.4f
-#define TOWER_SHOOT_DISTANCE 10
+#ifndef SELECTION_PLANE_H
+#define SELECTION_PLANE_H
 
 #include "GeometryNode.h"
 #include "Renderer.h"
@@ -10,40 +7,34 @@
 
 class OBJLoader;
 
-class Tower : public GameObject
+class SelectionPlane : public GameObject
 {
-	
-protected:
-	float ready;
-	bool m_used = false;
+private:
 
-	class GeometryNode* m_tower;
+	class GeometryNode* m_plane_r;
+	class GeometryNode* m_plane_g;
+	class GeometryNode* curr_plane;
+
+	glm::vec3 m_position;
 	glm::mat4 m_transformation_matrix;
 	glm::mat4 m_transformation_matrix_normal;
 
 public:
-	Tower(float ready);
-	virtual ~Tower();
+	SelectionPlane();
+	virtual ~SelectionPlane();
 
 	static bool initialize_meshes(OBJLoader& loader);
 
-	bool used() const
-	{
-		return m_used;
-	}
-
-	void set_used(bool used)
-	{
-		m_used = used;
-	}
-
+	glm::vec3 position() const override;
 	void set_position(const glm::vec3& highp_vec3) override;
 	void update(Game* game) override;
-
-	glm::vec3 shoot_from();
-
 	void draw_geometry(class Renderer* renderer) override;
 	void draw_geometry_to_shadow_map(class Renderer* renderer) override;
+
+	void move_up();
+	void move_down();
+	void move_left();
+	void move_right();
 };
 
 #endif

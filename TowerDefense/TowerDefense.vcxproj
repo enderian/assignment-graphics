@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BulletBill.cpp" />
     <ClCompile Include="CannonBall.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GeometricMesh.cpp" />
@@ -27,7 +26,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="Pirate.cpp" />
-    <ClCompile Include="PlaneRG.cpp" />
+    <ClCompile Include="SelectionPlane.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Road.cpp" />
@@ -37,19 +36,17 @@
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Tools.cpp" />
     <ClCompile Include="Tower.cpp" />
-    <ClCompile Include="TowerBB.cpp" />
-    <ClCompile Include="TowerMed.cpp" />
     <ClCompile Include="Treasure.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BulletBill.h" />
     <ClInclude Include="CannonBall.h" />
+    <ClInclude Include="Collidable.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GeometricMesh.h" />
     <ClInclude Include="GeometryNode.h" />
     <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="Pirate.h" />
-    <ClInclude Include="PlaneRG.h" />
+    <ClInclude Include="SelectionPlane.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Road.h" />
@@ -59,8 +56,6 @@
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Tools.h" />
     <ClInclude Include="Tower.h" />
-    <ClInclude Include="TowerBB.h" />
-    <ClInclude Include="TowerMed.h" />
     <ClInclude Include="Treasure.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -163,7 +158,7 @@ copy "$(SolutionDir)extras\bin\$(PlatformShortName)\*.dll" "$(OutDir)"</Command>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)extras\lib\$(PlatformName);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)extras\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2_image.lib;glew32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>

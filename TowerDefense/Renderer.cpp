@@ -1,8 +1,6 @@
 #include "Renderer.h"
 #include "GeometryNode.h"
 #include "Tools.h"
-#include <algorithm>
-#include "ShaderProgram.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "OBJLoader.h"
@@ -323,7 +321,7 @@ void Renderer::RenderShadowMaps(Renderable* renderable)
 		glUniformMatrix4fv(m_spot_light_shadow_map_program["uniform_view_matrix"], 1, GL_FALSE, glm::value_ptr(m_spotlight_node.GetViewMatrix()));
 
 		//Draw all the geometries passed
-		renderable->DrawGeometryToShadowMap(this);
+		renderable->draw_geometry_to_shadow_map(this);
 		
 		glBindVertexArray(0);
 
@@ -396,7 +394,7 @@ void Renderer::RenderGeometry(Renderable* renderable)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Draw all the geometries passed
-	renderable->DrawGeometry(this);
+	renderable->draw_geometry(this);
 
 	glBindVertexArray(0);
 	m_geometry_rendering_program.Unbind();

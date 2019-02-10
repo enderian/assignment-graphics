@@ -1,24 +1,27 @@
 #ifndef CANNONBALL_H
 #define CANNONBALL_H
 
-#include "Projectile.h"
+#define CANNONBALL_SCALE 0.1f
 
-class CannonBall : public Projectile
+#include "Projectile.h"
+#include "Collidable.h"
+
+class OBJLoader;
+
+class CannonBall : public Projectile, public Collidable
 {
 private:
-	glm::vec3 direction;
-	float time;
+	glm::vec3 m_origin, m_target;
+	float m_spawn_time;
 
 public:
 	CannonBall();
+	CannonBall(glm::vec3 origin, glm::vec3 target, float spawn_time);
 
-	CannonBall(glm::vec3 direction, float time);
+	static bool initialize_meshes(OBJLoader& loader);
 
-	static bool InitializeMeshes();
-
-	void SetPosition(glm::vec3 position);
-	void Update(Game* game) override;
-
+	void update(Game* game) override;
+	glm::vec3 get_center() override;
 };
 
 #endif

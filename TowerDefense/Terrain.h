@@ -4,8 +4,11 @@
 #include "GeometryNode.h"
 #include "Renderer.h"
 #include "Game.h"
+#include "Collidable.h"
 
-class Terrain : public GameObject
+class OBJLoader;
+
+class Terrain : public GameObject, public Collidable
 {
 private:
 	GeometryNode* m_terrain;
@@ -16,13 +19,15 @@ public:
 	Terrain();
 	virtual ~Terrain();
 
-	static bool InitializeMeshes();
+	static bool initialize_meshes(OBJLoader& loader);
 
-	void SetPosition(glm::vec3 position);
-	void Update(Game* game) override;
-	void DrawGeometry(class Renderer* renderer) override;
-	void DrawGeometryToShadowMap(class Renderer* renderer) override;
+	void set_position(const glm::vec3& highp_vec3) override;
+	void update(Game* game) override;
+	void draw_geometry(class Renderer* renderer) override;
+	void draw_geometry_to_shadow_map(class Renderer* renderer) override;
 
+	glm::vec3 get_center() override;
+	bool collides_with(Collidable* other) override;
 };
 
 #endif

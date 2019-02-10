@@ -1,13 +1,18 @@
 #ifndef PIRATE_H
 #define PIRATE_H
 
-#define SECONDS_PER_TILE 1.0f
+#define PIRATE_SPEED 1.0f
+#define PIRATE_INITIAL_HEALTH 100.0f
+#define PIRATE_SCALE 0.12f
 
 #include "GeometryNode.h"
 #include "Renderer.h"
 #include "Game.h"
+#include "Collidable.h"
 
-class Pirate : public GameObject
+class OBJLoader;
+
+class Pirate : public GameObject, public Collidable
 {
 	glm::mat4 m_transformation_matrix;
 
@@ -27,27 +32,21 @@ class Pirate : public GameObject
 	glm::mat4 m_right_foot_transformation_matrix;
 	glm::mat4 m_right_foot_transformation_matrix_normal;
 
-	glm::vec3 pos;
-
 	int m_current_tile = 0;
-
-	float spawn_time;
-
-	int health = 50;
+	float m_spawn_time;
+	float m_health;
 
 public:
 	Pirate();
 	Pirate(float spawn_time);
 	virtual ~Pirate();
 
-	float getTime();
+	static bool initialize_meshes(OBJLoader& loader);
 
-	static bool InitializeMeshes();
+	void update(Game* game) override;
+	void draw_geometry(Renderer* renderer) override;
+	void draw_geometry_to_shadow_map(Renderer* renderer) override;
 
-	void Update(Game* game) override;
-	void DrawGeometry(Renderer* renderer) override;
-	void DrawGeometryToShadowMap(Renderer* renderer) override;
-	
-	glm::vec3 GetPos();
+	glm::vec3 get_center() override;
 };
 #endif // PIRATE_H
