@@ -25,12 +25,12 @@ Game::~Game()
 	delete m_renderer;
 }
 
-bool Game::InitializeRenderer(int SCREEN_WIDTH, int SCREEN_HEIGHT)
+bool Game::initialize_renderer(int SCREEN_WIDTH, int SCREEN_HEIGHT)
 {
-	return m_renderer->Init(SCREEN_WIDTH, SCREEN_HEIGHT);
+	return m_renderer->init(SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
-bool Game::InitializeObjects()
+bool Game::initialize_objects()
 {
 	//Initialize the meshes into memory.
 	Pirate::InitializeMeshes();
@@ -40,7 +40,7 @@ bool Game::InitializeObjects()
 	TowerMed::InitializeMeshes();
 	TowerBB::InitializeMeshes();
 	CannonBall::InitializeMeshes();
-	BulletBill::InitializeMeshes();
+	BulletBill::initialize_meshes();
 	Terrain::InitializeMeshes();
 
 	m_terrain = new Terrain();
@@ -72,102 +72,102 @@ bool Game::InitializeObjects()
 	return true;
 }
 
-bool Game::InitializeLogic()
+bool Game::initialize_logic()
 {
 	return true;
 }
 
-void Game::Render()
+void Game::render()
 {
-	m_renderer->RenderGeometry(this);
-	m_renderer->RenderShadowMaps(this);
+	m_renderer->render_geometry(this);
+	m_renderer->render_shadow_maps(this);
 	//m_renderer->RenderHud();
-	m_renderer->RenderToOuterRenderBuffer();
+	m_renderer->render_to_outer_render_buffer();
 }
 
-void Game::Update(float elapsed)
+void Game::update(float elapsed)
 {
 	m_time += elapsed;
-	plane_rg->Update(this);
-	m_treasure_container->Update(this);
+	plane_rg->update(this);
+	m_treasure_container->update(this);
 
 	//Update all the pirates.
 	for (auto pirate : m_pirates)
 	{
-		pirate->Update(this);
+		pirate->update(this);
 	}
-	if(!finished)
+	if(!m_finished)
 	{
 		for (auto projectile : m_projectiles)
 		{
-			projectile->Update(this);
+			projectile->update(this);
 		}
 		for (auto tower : m_towers)
 		{
-			tower->Update(this);
+			tower->update(this);
 		}
 	}
 }
 
-void Game::DrawGeometry(Renderer* renderer)
+void Game::draw_geometry(Renderer* renderer)
 {
-	m_terrain->DrawGeometry(renderer);
+	m_terrain->draw_geometry(renderer);
 	for (auto pirate : m_pirates)
 	{
-		pirate->DrawGeometry(renderer);
+		pirate->draw_geometry(renderer);
 	}
 	for (auto road : m_roads)
 	{
-		road->DrawGeometry(renderer);
+		road->draw_geometry(renderer);
 	}
-	if(!finished)
+	if(!m_finished)
 	{
 		for (auto tower : m_towers)
 		{
-			if (tower->IsUsed()) tower->DrawGeometry(renderer);
+			if (tower->IsUsed()) tower->draw_geometry(renderer);
 		}
 		for (auto projectile : m_projectiles)
 		{
-			projectile->DrawGeometry(renderer);
+			projectile->draw_geometry(renderer);
 		}
-		plane_rg->DrawGeometry(renderer);
-		m_treasure_container->DrawGeometry(renderer);
+		plane_rg->draw_geometry(renderer);
+		m_treasure_container->draw_geometry(renderer);
 	}
 }
 
-void Game::DrawGeometryToShadowMap(Renderer* renderer)
+void Game::draw_geometry_to_shadow_map(Renderer* renderer)
 {
-	m_terrain->DrawGeometryToShadowMap(renderer);
+	m_terrain->draw_geometry_to_shadow_map(renderer);
 	for (auto pirate : m_pirates)
 	{
-		pirate->DrawGeometryToShadowMap(renderer);
+		pirate->draw_geometry_to_shadow_map(renderer);
 	}
 	for (auto road : m_roads)
 	{
-		road->DrawGeometryToShadowMap(renderer);
+		road->draw_geometry_to_shadow_map(renderer);
 	}
-	if(!finished)
+	if(!m_finished)
 	{
 		for (auto tower : m_towers)
 		{
-			if (tower->IsUsed()) tower->DrawGeometryToShadowMap(renderer);
+			if (tower->IsUsed()) tower->draw_geometry_to_shadow_map(renderer);
 		}
 		for (auto projectile : m_projectiles)
 		{
-			projectile->DrawGeometryToShadowMap(renderer);
+			projectile->draw_geometry_to_shadow_map(renderer);
 		}
-		plane_rg->DrawGeometryToShadowMap(renderer);
-		m_treasure_container->DrawGeometryToShadowMap(renderer);
+		plane_rg->draw_geometry_to_shadow_map(renderer);
+		m_treasure_container->draw_geometry_to_shadow_map(renderer);
 	}
 }
 
-void Game::SpawnPirate(float dt)
+void Game::spawn_pirate(float dt)
 {
 	auto pirate = new Pirate(dt);
 	this->m_pirates.push_back(pirate);
 }
 
-void Game::SpawnProjectile(glm::vec3 pos, glm::vec3 dir, Tower* tower)
+void Game::spawn_projectile(glm::vec3 pos, glm::vec3 dir, Tower* tower)
 {
 	if(dynamic_cast<TowerMed*>(tower))
 	{
@@ -179,13 +179,13 @@ void Game::SpawnProjectile(glm::vec3 pos, glm::vec3 dir, Tower* tower)
 	else if(dynamic_cast<TowerBB*>(tower))
 	{
 		auto projectile = new BulletBill(dir, time());
-		projectile->SetPosition(glm::vec3(pos.x - 0.006565, 6.175, pos.z - 0.04927));
+		projectile->set_position(glm::vec3(pos.x - 0.006565, 6.175, pos.z - 0.04927));
 		this->m_projectiles.push_back(projectile);
 	}
 }
 
 
-void Game::DeployTower(glm::vec3 pos)
+void Game::deploy_tower(glm::vec3 pos)
 {
 	for (Tower* t : m_towers)
 	{
@@ -201,7 +201,7 @@ void Game::DeployTower(glm::vec3 pos)
 	}
 }
 
-void Game::DeployTowerBB(glm::vec3 pos)
+void Game::deploy_tower_bb(glm::vec3 pos)
 {
 	for (Tower* t : m_towers)
 	{
@@ -217,7 +217,7 @@ void Game::DeployTowerBB(glm::vec3 pos)
 	}
 }
 
-bool Game::RemoveTower(glm::vec3 pos)
+bool Game::remove_tower(glm::vec3 pos)
 {
 	for (Tower* t: m_towers)
 	{
@@ -230,15 +230,15 @@ bool Game::RemoveTower(glm::vec3 pos)
 	return false;
 }
 
-void Game::AddTower()
+void Game::add_tower()
 {
 	auto tower = new TowerMed(time());
 	this->m_towers.push_back(tower);
 }
 
-void Game::GameOver()
+void Game::game_over()
 {
-	finished = true;
+	m_finished = true;
 
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it)
 	{
@@ -262,7 +262,7 @@ void Game::GameOver()
 	}
 }
 
-bool Game::GetGameOver()
+bool Game::get_game_over()
 {
-	return this->finished;
+	return this->m_finished;
 }

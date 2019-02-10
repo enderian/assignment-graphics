@@ -12,33 +12,22 @@ Projectile::~Projectile()
 	delete m_projectile;
 }
 
-void Projectile::Update(Game* game)
+void Projectile::update(Game* game)
 {
 	
 }
 
-void Projectile::DrawGeometry(Renderer* renderer)
+void Projectile::draw_geometry(Renderer* renderer)
 {
-	renderer->DrawGeometryNode(m_projectile, m_transformation_matrix, m_transformation_matrix_normal);
+	renderer->draw_geometry_node(m_projectile, m_transformation_matrix, m_transformation_matrix_normal);
 }
 
-void Projectile::DrawGeometryToShadowMap(Renderer* renderer)
+void Projectile::draw_geometry_to_shadow_map(Renderer* renderer)
 {
-	renderer->DrawGeometryNodeToShadowMap(m_projectile, m_transformation_matrix, m_transformation_matrix_normal);
+	renderer->draw_geometry_node_to_shadow_map(m_projectile, m_transformation_matrix, m_transformation_matrix_normal);
 }
 
-void Projectile::SetHit(bool hit)
+glm::vec3 Projectile::get_pos()
 {
-	this->hit = hit;
-}
-
-
-glm::vec3 Projectile::GetPos()
-{
-	return this->pos;
-}
-
-bool Projectile::GetHit()
-{
-	return this->hit;
+	return this->m_position;
 }

@@ -5,7 +5,7 @@
 
 GeometricMesh* m_bulletbill_mesh;
 
-bool BulletBill::InitializeMeshes()
+bool BulletBill::initialize_meshes()
 {
 	OBJLoader loader;
 	m_bulletbill_mesh = loader.load("../assets/Various/BulletBill.obj");
@@ -24,7 +24,7 @@ BulletBill::BulletBill(glm::vec3 dir, float time)
 	this->time = time;
 }
 
-void BulletBill::SetPosition(glm::vec3 position)
+void BulletBill::set_position(glm::vec3 position)
 {
 	this->pos = position;
 	m_transformation_matrix = glm::translate(glm::mat4(1), position*glm::vec3(4, 1, 4));
@@ -32,9 +32,9 @@ void BulletBill::SetPosition(glm::vec3 position)
 	m_transformation_matrix_normal = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_transformation_matrix))));
 }
 
-void BulletBill::Update(Game* game)
+void BulletBill::update(Game* game)
 {
 	const float alpha = (std::fmod((game->time() - this->time) / 1.0f, 1.0f) / 1.0f);
 	pos = glm::mix(this->pos, this->direction, alpha);
-	SetPosition(pos);
+	set_position(pos);
 }

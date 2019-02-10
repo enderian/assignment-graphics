@@ -33,17 +33,16 @@ void TowerMed::SetUsed(bool used)
 	this->used = used;
 }
 
-void TowerMed::Update(Game* game)
+void TowerMed::update(Game* game)
 {
-	if (used && !game->GetGameOver())
+	if (used && !game->get_game_over())
 	{
 		std::vector<Pirate*> pirates = game->m_pirates1();
 		for (Pirate* p : pirates)
 		{
 			if ((glm::abs(p->GetPos().x - this->pos.x) <= 1.2) && (glm::abs(p->GetPos().z - this->pos.z) <= 1.2) && (game->time() - ready) >= 1)
 			{
-				PlaySound(TEXT("../assets/Sounds/cannon_launch.wav"), NULL, SND_ASYNC | SND_FILENAME);
-				game->SpawnProjectile(pos, glm::vec3(ceil(p->GetPos().x), p->GetPos().y + 1.40196, ceil(p->GetPos().z)), this);
+				game->spawn_projectile(pos, glm::vec3(ceil(p->GetPos().x), p->GetPos().y + 1.40196, ceil(p->GetPos().z)), this);
 				ready = game->time();
 			}
 		}

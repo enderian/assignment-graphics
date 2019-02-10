@@ -43,7 +43,7 @@ Renderer::~Renderer()
 	delete m_tower_object;
 }
 
-bool Renderer::Init(int SCREEN_WIDTH, int SCREEN_HEIGHT)
+bool Renderer::init(int SCREEN_WIDTH, int SCREEN_HEIGHT)
 {
 	this->m_screen_width = SCREEN_WIDTH;
 	this->m_screen_height = SCREEN_HEIGHT;
@@ -183,7 +183,7 @@ bool Renderer::InitRenderingTechniques()
 	return initialized;
 }
 
-bool Renderer::ReloadShaders()
+bool Renderer::reload_shaders()
 {
 	bool reloaded = true;
 
@@ -203,11 +203,11 @@ bool Renderer::InitDeferredShaderBuffers()
 	// framebuffer to link everything together
 	glGenFramebuffers(1, &m_fbo);
 
-	return ResizeBuffers(m_screen_width, m_screen_height);
+	return resize_buffers(m_screen_width, m_screen_height);
 }
 
 // resize post processing textures and save the screen size
-bool Renderer::ResizeBuffers(int width, int height)
+bool Renderer::resize_buffers(int width, int height)
 {
 	m_screen_width = width;
 	m_screen_height = height;
@@ -279,16 +279,16 @@ bool Renderer::InitGeometricMeshes()
 	return initialized;
 }
 
-void Renderer::SetRenderingMode(RENDERING_MODE mode)
+void Renderer::set_rendering_mode(RENDERING_MODE mode)
 {
 	m_rendering_mode = mode;
 }
 
 // Render the Scene
-void Renderer::PostRender()
+void Renderer::post_render()
 {
 	// Render to screen
-	RenderToOuterRenderBuffer();
+	render_to_outer_render_buffer();
 
 	GLenum error = Tools::CheckGLError();
 	if (error != GL_NO_ERROR)
@@ -298,7 +298,7 @@ void Renderer::PostRender()
 	}
 }
 
-void Renderer::RenderShadowMaps(Renderable* renderable)
+void Renderer::render_shadow_maps(Renderable* renderable)
 {
 	// if the light source casts shadows
 	if (m_spotlight_node.GetCastShadowsStatus())
@@ -323,7 +323,7 @@ void Renderer::RenderShadowMaps(Renderable* renderable)
 		glUniformMatrix4fv(m_spot_light_shadow_map_program["uniform_view_matrix"], 1, GL_FALSE, glm::value_ptr(m_spotlight_node.GetViewMatrix()));
 
 		//Draw all the geometries passed
-		renderable->DrawGeometryToShadowMap(this);
+		renderable->draw_geometry_to_shadow_map(this);
 		
 		glBindVertexArray(0);
 
@@ -336,7 +336,7 @@ void Renderer::RenderShadowMaps(Renderable* renderable)
 }
 
 
-void Renderer::RenderGeometry(Renderable* renderable)
+void Renderer::render_geometry(Renderable* renderable)
 {
 	// Bind the Intermediate framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
@@ -396,7 +396,7 @@ void Renderer::RenderGeometry(Renderable* renderable)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Draw all the geometries passed
-	renderable->DrawGeometry(this);
+	renderable->draw_geometry(this);
 
 	glBindVertexArray(0);
 	m_geometry_rendering_program.Unbind();
@@ -409,7 +409,7 @@ void Renderer::RenderGeometry(Renderable* renderable)
 
 }
 
-void Renderer::DrawGeometryNode(GeometryNode* node, glm::mat4 model_matrix, glm::mat4 normal_matrix)
+void Renderer::draw_geometry_node(GeometryNode* node, glm::mat4 model_matrix, glm::mat4 normal_matrix)
 {
 	glBindVertexArray(node->m_vao);
 	glUniformMatrix4fv(m_geometry_rendering_program["uniform_model_matrix"], 1, GL_FALSE, glm::value_ptr(model_matrix));
@@ -429,7 +429,7 @@ void Renderer::DrawGeometryNode(GeometryNode* node, glm::mat4 model_matrix, glm:
 	}
 }
 
-void Renderer::DrawGeometryNodeToShadowMap(GeometryNode* node, glm::mat4 model_matrix, glm::mat4 normal_matrix)
+void Renderer::draw_geometry_node_to_shadow_map(GeometryNode* node, glm::mat4 model_matrix, glm::mat4 normal_matrix)
 {
 	glBindVertexArray(node->m_vao);
 	glUniformMatrix4fv(m_spot_light_shadow_map_program["uniform_model_matrix"], 1, GL_FALSE, glm::value_ptr(model_matrix));
@@ -439,75 +439,7 @@ void Renderer::DrawGeometryNodeToShadowMap(GeometryNode* node, glm::mat4 model_m
 	}
 }
 
-
-//THIS DOES NOT WORK, I'M TRYING TO FIGURE IT OUT
-/*void Renderer::RenderHud()
-{
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, m_screen_width, m_screen_height);
-
-	glClear(GL_COLOR_BUFFER_BIT);
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_BLEND);
-
-	m_hud_program.Bind();
-
-	glUniformMatrix4fv(m_hud_program["uniform_projection_matrix"], 1, GL_FALSE, glm::value_ptr(m_projection_matrix));
-	glUniformMatrix4fv(m_hud_program["uniform_view_matrix"], 1, GL_FALSE, glm::value_ptr(m_view_matrix));
-	glUniform3f(m_hud_program["uniform_camera_position"], m_camera_position.x, m_camera_position.y, m_camera_position.z);
-
-	glBindVertexArray(m_vao_fbo);
-
-	GLuint temp = TextureManager::GetInstance().RequestTexture("../Assets/Hud/coins-pirates.png");
-
-	glBindTexture(GL_TEXTURE_2D, temp);
-
-	glBindVertexArray(0);
-
-	m_hud_program.Unbind();
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, m_screen_width, m_screen_height);
-
-	// clear the color and depth buffer
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// disable depth testing and blending
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_BLEND);
-
-	// bind the post processing program
-	m_hud_program.Bind();
-
-	glBindVertexArray(m_vao_fbo);
-	// Bind the intermediate color image to texture unit 0
-	glActiveTexture(GL_TEXTURE0);
-	glTexCoord2f(0, 0);
-	GLuint temp = TextureManager::GetInstance().RequestTexture("../Assets/Hud/coins-pirates.png");
-
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-
-	//glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, 512, 512);
-
-	glBindTexture(GL_TEXTURE_2D, m_fbo_texture);
-	glUniform1i(m_hud_program["uniform_texture"], 0);
-
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-	// Bind the intermediate depth buffer to texture unit 1
-	glm::mat4 projection_inverse_matrix = glm::inverse(m_projection_matrix);
-	glUniformMatrix4fv(m_hud_program["uniform_projection_inverse_matrix"], 1, GL_FALSE, glm::value_ptr(projection_inverse_matrix));
-
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	glBindVertexArray(0);
-
-	// Unbind the post processing program
-	m_hud_program.Unbind();
-}*/
-
-
-void Renderer::RenderToOuterRenderBuffer()
+void Renderer::render_to_outer_render_buffer()
 {
 	// Bind the default framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -543,27 +475,4 @@ void Renderer::RenderToOuterRenderBuffer()
 
 	// Unbind the post processing program
 	m_postprocess_program.Unbind();
-}
-
-void Renderer::CameraMoveForward(bool enable)
-{
-	m_camera_movement.x = (enable)? 1 : 0;
-}
-void Renderer::CameraMoveBackWard(bool enable)
-{
-	m_camera_movement.x = (enable) ? -1 : 0;
-}
-
-void Renderer::CameraMoveLeft(bool enable)
-{
-	m_camera_movement.y = (enable) ? -1 : 0;
-}
-void Renderer::CameraMoveRight(bool enable)
-{
-	m_camera_movement.y = (enable) ? 1 : 0;
-}
-
-void Renderer::CameraLook(glm::vec2 lookDir)
-{
-	m_camera_look_angle_destination = glm::vec2(1, -1) * lookDir;
 }

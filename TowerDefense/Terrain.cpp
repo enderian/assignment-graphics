@@ -29,17 +29,17 @@ void Terrain::SetPosition(glm::vec3 position)
 	m_transformation_matrix_normal = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_transformation_matrix))));
 }
 
-void Terrain::Update(Game* game)
+void Terrain::update(Game* game)
 {
 
 }
 
-void Terrain::DrawGeometry(Renderer* renderer)
+void Terrain::draw_geometry(Renderer* renderer)
 {
-	renderer->DrawGeometryNode(m_terrain, m_transformation_matrix, m_transformation_matrix_normal);
+	renderer->draw_geometry_node(m_terrain, m_transformation_matrix, m_transformation_matrix_normal);
 }
 
-void Terrain::DrawGeometryToShadowMap(Renderer* renderer)
+void Terrain::draw_geometry_to_shadow_map(Renderer* renderer)
 {
-	renderer->DrawGeometryNodeToShadowMap(m_terrain, m_transformation_matrix, m_transformation_matrix_normal);
+	renderer->draw_geometry_node_to_shadow_map(m_terrain, m_transformation_matrix, m_transformation_matrix_normal);
 }

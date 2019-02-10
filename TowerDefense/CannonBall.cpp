@@ -28,18 +28,18 @@ CannonBall::CannonBall(glm::vec3 origin, glm::vec3 direction, float time)
 
 void CannonBall::SetPosition(glm::vec3 position)
 {
-	this->pos = position;
+	this->m_position = position;
 	m_transformation_matrix = glm::translate(glm::mat4(1), position*glm::vec3(4, 1, 4));
 	m_transformation_matrix *= glm::scale(glm::mat4(1), glm::vec3(0.1));
 	m_transformation_matrix_normal = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_transformation_matrix))));
 }
 
-void CannonBall::Update(Game* game)
+void CannonBall::update(Game* game)
 {
 	const float alpha = (game->time() - this->time) / 0.6f;
-	pos = glm::mix(this->origin, this->direction, alpha);
+	m_position = glm::mix(this->origin, this->direction, alpha);
 
-	if (pos.y < 0)
+	if (m_position.y < 0)
 	{
 		auto balls = game->m_projectiles1();
 		for (auto it = balls.begin(); it != balls.end(); ++it) {
@@ -52,5 +52,5 @@ void CannonBall::Update(Game* game)
 		}
 	}
 
-	SetPosition(pos);
+	SetPosition(m_position);
 }

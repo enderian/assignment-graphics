@@ -33,18 +33,17 @@ void TowerBB::SetUsed(bool used)
 	this->used = used;
 }
 
-void TowerBB::Update(Game* game)
+void TowerBB::update(Game* game)
 {
-	if (used && !game->GetGameOver())
+	if (used && !game->get_game_over())
 	{
 		std::vector<Pirate*> pirates = game->m_pirates1();
 		for (Pirate* p : pirates)
 		{
 			if ((glm::abs(p->GetPos().x - this->pos.x) <= 4) && (glm::abs(p->GetPos().z - this->pos.z) <= 4) && (game->time() - ready) >= 1)
 			{
-				PlaySound(TEXT("../assets/Sounds/cannon_launch.wav"), NULL, SND_ASYNC | SND_FILENAME);
 				auto pos = p->GetPosAt(game->time() + 1.0f);
-				game->SpawnProjectile(pos, glm::vec3(ceil(pos.x), pos.y + 1.40196, ceil(pos.z)), this);
+				game->spawn_projectile(pos, glm::vec3(ceil(pos.x), pos.y + 1.40196, ceil(pos.z)), this);
 				ready = game->time();
 			}
 		}

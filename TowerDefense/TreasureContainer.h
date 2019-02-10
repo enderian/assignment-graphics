@@ -17,9 +17,9 @@ public:
 	TreasureContainer();
 	~TreasureContainer();
 
-	void Update(Game* game) override;
-	void DrawGeometry(Renderer* renderer) override;
-	void DrawGeometryToShadowMap(Renderer* renderer) override;
+	void update(Game* game) override;
+	void draw_geometry(Renderer* renderer) override;
+	void draw_geometry_to_shadow_map(Renderer* renderer) override;
 
 	int GetCoins();
 };

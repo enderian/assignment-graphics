@@ -31,17 +31,17 @@ void Treasure::SetPosition(glm::vec3 position)
 	m_transformation_matrix_normal = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_transformation_matrix))));
 }
 
-void Treasure::Update(Game* game)
+void Treasure::update(Game* game)
 {
 	
 }
 
-void Treasure::DrawGeometry(Renderer* renderer)
+void Treasure::draw_geometry(Renderer* renderer)
 {
-	renderer->DrawGeometryNode(m_treasure, m_transformation_matrix, m_transformation_matrix_normal);
+	renderer->draw_geometry_node(m_treasure, m_transformation_matrix, m_transformation_matrix_normal);
 }
 
-void Treasure::DrawGeometryToShadowMap(Renderer* renderer)
+void Treasure::draw_geometry_to_shadow_map(Renderer* renderer)
 {
-	renderer->DrawGeometryNodeToShadowMap(m_treasure, m_transformation_matrix, m_transformation_matrix_normal);
+	renderer->draw_geometry_node_to_shadow_map(m_treasure, m_transformation_matrix, m_transformation_matrix_normal);
 }

@@ -19,7 +19,7 @@ public:
 	static bool InitializeMeshes();
 
 	void SetPosition(glm::vec3 position);
-	void Update(Game* game) override;
+	void update(Game* game) override;
 
 };
 

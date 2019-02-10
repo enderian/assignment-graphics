@@ -9,18 +9,18 @@
 
 TreasureContainer::TreasureContainer()
 {
-	pos = treasure_locs[1];
+	pos = treasure_locations[1];
 
 	m_treasure_1 = new Treasure();
-	m_treasure_1->SetPosition(treasure_locs[0]);
+	m_treasure_1->SetPosition(treasure_locations[0]);
 	m_treasure_2 = new Treasure();
-	m_treasure_2->SetPosition(treasure_locs[1]);
+	m_treasure_2->SetPosition(treasure_locations[1]);
 	m_treasure_3 = new Treasure();
-	m_treasure_3->SetPosition(treasure_locs[2]);
+	m_treasure_3->SetPosition(treasure_locations[2]);
 }
 
 
-void TreasureContainer::Update(Game* game)
+void TreasureContainer::update(Game* game)
 {
 	auto m_pirates = game->m_pirates1();
 	const glm::vec3 center(pos.x*(-.0176) + pos.x, pos.y*1.08174 + pos.y, pos.z*(-.80619) + pos.z);
@@ -32,7 +32,6 @@ void TreasureContainer::Update(Game* game)
 		const auto dif(glm::abs(center - pirate_center));
 		if (dif.x < .33 && dif.y < .33 && dif.z < .33)
 		{
-			PlaySound(TEXT("../assets/Sounds/coins.wav"), NULL, SND_ASYNC | SND_FILENAME);
 			m_coins--;
 			delete pirate;
 			m_pirates.erase(it);
@@ -41,7 +40,7 @@ void TreasureContainer::Update(Game* game)
 			if (m_coins == 0)
 			{
 				//Complete the game!
-				game->GameOver();
+				game->game_over();
 			}
 			return;
 		}
@@ -50,18 +49,18 @@ void TreasureContainer::Update(Game* game)
 
 TreasureContainer::~TreasureContainer() = default;
 
-void TreasureContainer::DrawGeometry(Renderer* renderer)
+void TreasureContainer::draw_geometry(Renderer* renderer)
 {
-	if (m_coins > 2) m_treasure_1->DrawGeometry(renderer);
-	if (m_coins > 0) m_treasure_2->DrawGeometry(renderer);
-	if (m_coins > 1) m_treasure_3->DrawGeometry(renderer);
+	if (m_coins > 2) m_treasure_1->draw_geometry(renderer);
+	if (m_coins > 0) m_treasure_2->draw_geometry(renderer);
+	if (m_coins > 1) m_treasure_3->draw_geometry(renderer);
 }
 
-void TreasureContainer::DrawGeometryToShadowMap(Renderer* renderer)
+void TreasureContainer::draw_geometry_to_shadow_map(Renderer* renderer)
 {
-	if (m_coins > 2) m_treasure_1->DrawGeometryToShadowMap(renderer);
-	if (m_coins > 0) m_treasure_2->DrawGeometryToShadowMap(renderer);
-	if (m_coins > 1) m_treasure_3->DrawGeometryToShadowMap(renderer);
+	if (m_coins > 2) m_treasure_1->draw_geometry_to_shadow_map(renderer);
+	if (m_coins > 0) m_treasure_2->draw_geometry_to_shadow_map(renderer);
+	if (m_coins > 1) m_treasure_3->draw_geometry_to_shadow_map(renderer);
 }
 
 int TreasureContainer::GetCoins()

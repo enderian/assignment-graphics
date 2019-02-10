@@ -16,7 +16,7 @@ public:
 
 	void SetPosition(glm::vec3 position);
 	void SetUsed(bool used);
-	void Update(Game* game) override;
+	void update(Game* game) override;
 };
 
 #endif

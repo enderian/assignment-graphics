@@ -15,14 +15,14 @@ Tower::~Tower()
 	delete m_tower;
 }
 
-void Tower::DrawGeometry(Renderer* renderer)
+void Tower::draw_geometry(Renderer* renderer)
 {
-	renderer->DrawGeometryNode(m_tower, m_transformation_matrix, m_transformation_matrix_normal);
+	renderer->draw_geometry_node(m_tower, m_transformation_matrix, m_transformation_matrix_normal);
 }
 
-void Tower::DrawGeometryToShadowMap(Renderer* renderer)
+void Tower::draw_geometry_to_shadow_map(Renderer* renderer)
 {
-	renderer->DrawGeometryNodeToShadowMap(m_tower, m_transformation_matrix, m_transformation_matrix_normal);
+	renderer->draw_geometry_node_to_shadow_map(m_tower, m_transformation_matrix, m_transformation_matrix_normal);
 }
 
 void Tower::SetPosition(glm::vec3 position)
@@ -30,7 +30,7 @@ void Tower::SetPosition(glm::vec3 position)
 	
 }
 
-void Tower::Update(Game* game)
+void Tower::update(Game* game)
 {
 
 }

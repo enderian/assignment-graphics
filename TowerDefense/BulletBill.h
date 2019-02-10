@@ -16,10 +16,10 @@ public:
 
 	BulletBill(glm::vec3 dir, float time);
 
-	static bool InitializeMeshes();
+	static bool initialize_meshes();
 
-	void SetPosition(glm::vec3 position);
-	void Update(Game* game) override;
+	void set_position(glm::vec3 position);
+	void update(Game* game) override;
 
 };
 

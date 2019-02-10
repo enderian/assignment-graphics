@@ -3,7 +3,8 @@
 
 #include <vector>
 #include <SDL2/SDL.h>
-#define TOTAL_GAME_TIMES = 29;
+
+#define GAME_TILES_ALL 29
 
 const glm::vec3 game_tiles[] = {
 	glm::vec3(0, 0, 0),
@@ -37,7 +38,7 @@ const glm::vec3 game_tiles[] = {
 	glm::vec3(6, 0, 0)
 };
 
-const glm::vec3 treasure_locs[] = {
+const glm::vec3 treasure_locations[] = {
 	glm::vec3(5, 0, -.5),
 	glm::vec3(6, 0, -.5),
 	glm::vec3(7, 0, -.5)
@@ -46,7 +47,7 @@ const glm::vec3 treasure_locs[] = {
 class Game: public Renderable
 {
 private:
-	SDL_Event event;
+	SDL_Event m_event;
 
 	float m_time = 0.0f;
 	class Renderer* m_renderer;
@@ -59,44 +60,44 @@ private:
 	std::vector<class Tower*> m_towers;
 	std::vector<class Projectile*> m_projectiles;
 
-	bool finished = false;
+	bool m_finished = false;
 
 public:
 	Game();
 	~Game();
 
-	float time()
+	float time() const
 	{
 		return m_time;
 	}
 
-	Renderer* renderer()
+	Renderer* renderer() const
 	{
 		return m_renderer;
 	}
 
-	PlaneRG* getPlaneRG()
+	PlaneRG* get_plane_rg() const
 	{
 		return plane_rg;
 	}
 
-	bool InitializeRenderer(int SCREEN_WIDTH, int SCREEN_HEIGHT);
-	bool InitializeObjects();
-	bool InitializeLogic();
+	bool initialize_renderer(int SCREEN_WIDTH, int SCREEN_HEIGHT);
+	bool initialize_objects();
+	bool initialize_logic();
 
-	void Update(float elapsed);
-	void Render();
-	void SpawnPirate(float dt);
-	void SpawnProjectile(glm::vec3 pos, glm::vec3 dir, Tower* tower);
-	void DeployTower(glm::vec3 pos);
-	void DeployTowerBB(glm::vec3 pos);
-	bool RemoveTower(glm::vec3 pos);
-	void AddTower();
-	void GameOver();
-	bool GetGameOver();
+	void update(float elapsed);
+	void render();
+	void spawn_pirate(float dt);
+	void spawn_projectile(glm::vec3 pos, glm::vec3 dir, Tower* tower);
+	void deploy_tower(glm::vec3 pos);
+	void deploy_tower_bb(glm::vec3 pos);
+	bool remove_tower(glm::vec3 pos);
+	void add_tower();
+	void game_over();
+	bool get_game_over();
 
-	void DrawGeometry(Renderer* renderer) override;
-	void DrawGeometryToShadowMap(Renderer* renderer) override;
+	void draw_geometry(Renderer* renderer) override;
+	void draw_geometry_to_shadow_map(Renderer* renderer) override;
 
 	std::vector<Pirate*> m_pirates1() const
 	{
@@ -132,6 +133,6 @@ public:
 class GameObject : public Renderable
 {
 public:
-	virtual void Update(Game* game) = 0;
+	virtual void update(Game* game) = 0;
 };
 #endif // GAME_H

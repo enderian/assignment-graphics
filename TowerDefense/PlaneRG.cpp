@@ -36,7 +36,7 @@ void PlaneRG::SetPosition(glm::vec3 position)
 	m_transformation_matrix_normal = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_transformation_matrix))));
 }
 
-void PlaneRG::Update(Game* game)
+void PlaneRG::update(Game* game)
 {
 	SetPosition(pos);
 	for (glm::vec3 i : game_tiles)
@@ -60,14 +60,14 @@ void PlaneRG::Update(Game* game)
 	}
 }
 
-void PlaneRG::DrawGeometry(Renderer* renderer)
+void PlaneRG::draw_geometry(Renderer* renderer)
 {
-	renderer->DrawGeometryNode(curr_plane, m_transformation_matrix, m_transformation_matrix_normal);
+	renderer->draw_geometry_node(curr_plane, m_transformation_matrix, m_transformation_matrix_normal);
 }
 
-void PlaneRG::DrawGeometryToShadowMap(Renderer* renderer)
+void PlaneRG::draw_geometry_to_shadow_map(Renderer* renderer)
 {
-	renderer->DrawGeometryNodeToShadowMap(curr_plane, m_transformation_matrix, m_transformation_matrix_normal);
+	renderer->draw_geometry_node_to_shadow_map(curr_plane, m_transformation_matrix, m_transformation_matrix_normal);
 }
 
 void PlaneRG::moveUp()

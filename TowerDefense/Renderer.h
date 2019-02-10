@@ -71,35 +71,28 @@ protected:
 public:
 	Renderer();
 	~Renderer();
-	bool Init(int SCREEN_WIDTH, int SCREEN_HEIGHT);
-	bool ResizeBuffers(int SCREEN_WIDTH, int SCREEN_HEIGHT);
-	bool ReloadShaders();
+	bool init(int SCREEN_WIDTH, int SCREEN_HEIGHT);
+	bool resize_buffers(int SCREEN_WIDTH, int SCREEN_HEIGHT);
+	bool reload_shaders();
 
 	// Passes
-	void RenderShadowMaps(Renderable* geometries);
-	void RenderGeometry(Renderable* geometries);
-	void PostRender();
+	void render_shadow_maps(Renderable* geometries);
+	void render_geometry(Renderable* geometries);
+	void post_render();
 	//void RenderHud();
-	void RenderToOuterRenderBuffer();
+	void render_to_outer_render_buffer();
 
-	void DrawGeometryNode(class GeometryNode* node, glm::mat4 model_matrix, glm::mat4 normal_matrix);
-	void DrawGeometryNodeToShadowMap(class GeometryNode* node, glm::mat4 model_matrix, glm::mat4 normal_matrix);
+	void draw_geometry_node(class GeometryNode* node, glm::mat4 model_matrix, glm::mat4 normal_matrix);
+	void draw_geometry_node_to_shadow_map(class GeometryNode* node, glm::mat4 model_matrix, glm::mat4 normal_matrix);
 
 	// Set functions
-	void SetRenderingMode(RENDERING_MODE mode);
-
-	// Camera Function
-	void CameraMoveForward(bool enable);
-	void CameraMoveBackWard(bool enable);
-	void CameraMoveLeft(bool enable);
-	void CameraMoveRight(bool enable);
-	void CameraLook(glm::vec2 lookDir);
+	void set_rendering_mode(RENDERING_MODE mode);
 };
 class Renderable
 {
 public:
 	virtual ~Renderable() = default;
-	virtual void DrawGeometry(class Renderer* renderer) = 0;
-	virtual void DrawGeometryToShadowMap(class Renderer* renderer) = 0;
+	virtual void draw_geometry(class Renderer* renderer) = 0;
+	virtual void draw_geometry_to_shadow_map(class Renderer* renderer) = 0;
 };
 #endif // RENDERER_H
