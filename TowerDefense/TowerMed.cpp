@@ -3,6 +3,8 @@
 #include <glm/gtc/matrix_transform.inl>
 #include "OBJLoader.h"
 #include <iostream>
+#include <windows.h>
+#include <mmsystem.h>
 
 GeometricMesh* m_tower_mesh;
 
@@ -40,7 +42,7 @@ void TowerMed::Update(Game* game)
 		{
 			if ((glm::abs(p->GetPos().x - this->pos.x) <= 1.2) && (glm::abs(p->GetPos().z - this->pos.z) <= 1.2) && (game->time() - ready) >= 1)
 			{
-				//printf("Here\n");
+				PlaySound(TEXT("../assets/Sounds/cannon_launch.wav"), NULL, SND_ASYNC | SND_FILENAME);
 				game->SpawnProjectile(pos, glm::vec3(ceil(p->GetPos().x), p->GetPos().y + 1.40196, ceil(p->GetPos().z)), this);
 				ready = game->time();
 			}

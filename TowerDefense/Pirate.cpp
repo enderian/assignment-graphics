@@ -4,6 +4,11 @@
 #include "Projectile.h"
 #include "CannonBall.h"
 #include <iostream>
+#include <windows.h>
+#include <mmsystem.h>
+
+#undef min
+#undef max
 
 GeometricMesh* m_body_mesh;
 GeometricMesh* m_arm_mesh;
@@ -96,6 +101,7 @@ void Pirate::Update(Game* game)
 		{
 			if(dynamic_cast<CannonBall*>(m_projectiles[i]) && !m_projectiles[i]->GetHit())
 			{
+				PlaySound(TEXT("../assets/Sounds/hit.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_PURGE);
 				health -= 25;
 				printf("KAPPA\n");
 				m_projectiles[i]->SetHit(true);

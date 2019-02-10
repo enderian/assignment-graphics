@@ -32,7 +32,7 @@ void Tower::SetPosition(glm::vec3 position)
 
 void Tower::Update(Game* game)
 {
-	
+
 }
 
 

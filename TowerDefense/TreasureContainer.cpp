@@ -2,6 +2,10 @@
 #include "Treasure.h"
 #include "Pirate.h"
 #include "Game.h"
+#include <windows.h>
+#include <mmsystem.h>
+#include <conio.h>
+#include <iostream>
 
 TreasureContainer::TreasureContainer()
 {
@@ -29,6 +33,7 @@ void TreasureContainer::Update(Game* game)
 		glm::vec3 dif(glm::abs(center - pirate_center));
 		if (dif.x < .33 && dif.y < .33 && dif.z < .33)
 		{
+			PlaySound(TEXT("../assets/Sounds/coins.wav"), NULL, SND_ASYNC | SND_FILENAME);
 			m_coins--;
 			erase = i;
 			delete pirate;
