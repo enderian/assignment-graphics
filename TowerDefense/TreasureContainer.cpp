@@ -32,6 +32,12 @@ void TreasureContainer::Update(Game* game)
 			delete pirate;
 			m_pirates.erase(it);
 			game->set_m_pirates(m_pirates);
+
+			if (m_coins == 0)
+			{
+				//Complete the game!
+				game->GameOver();
+			}
 			return;
 		}
 	}

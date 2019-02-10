@@ -54,17 +54,12 @@ private:
 	class Terrain* m_terrain;
 	class TreasureContainer* m_treasure_container;
 
-	//Testing
-	class CannonBall* test_ball;
-	class Tower* test_tower;
-	class BulletBill* test_bill;
-
 	std::vector<class Road*> m_roads;
 	std::vector<class Pirate*> m_pirates;
 	std::vector<class Tower*> m_towers;
 	std::vector<class Projectile*> m_projectiles;
 
-	bool finished = false, delete_all = false;
+	bool finished = false;
 
 public:
 	Game();
@@ -91,20 +86,42 @@ public:
 
 	void Update(float elapsed);
 	void Render();
-	void SpawnPirate(float dt, glm::vec3 pos);
+	void SpawnPirate(float dt);
 	void SpawnProjectile(glm::vec3 pos, glm::vec3 dir, Tower* tower);
 	void DeployTower(glm::vec3 pos);
 	void DeployTowerBB(glm::vec3 pos);
 	bool RemoveTower(glm::vec3 pos);
 	void AddTower();
 	void GameOver();
+	bool GetGameOver();
 
 	void DrawGeometry(Renderer* renderer) override;
 	void DrawGeometryToShadowMap(Renderer* renderer) override;
 
-	std::vector<Tower*> GetTowers();
-	std::vector<Pirate*> GetPirates();
-	std::vector<Projectile*> GetCannonBalls();
+	std::vector<Pirate*> m_pirates1() const
+	{
+		return m_pirates;
+	}
+
+	void set_m_pirates(const std::vector<Pirate*>& pirates)
+	{
+		m_pirates = pirates;
+	}
+
+	std::vector<Tower*> m_towers1() const
+	{
+		return m_towers;
+	}
+
+	void set_m_towers(const std::vector<Tower*>& towers)
+	{
+		m_towers = towers;
+	}
+
+	std::vector<Projectile*> m_projectiles1() const
+	{
+		return m_projectiles;
+	}
 
 	void set_m_projectiles(const std::vector<Projectile*>& projectiles)
 	{

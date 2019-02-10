@@ -12,7 +12,6 @@
 #include "BulletBill.h"
 #include "Terrain.h"
 #include <glm/gtc/matrix_transform.inl>
-#include <SDL2/SDL.h>
 #include "OBJLoader.h"
 #include <iostream>
 
@@ -45,15 +44,11 @@ bool Game::InitializeObjects()
 	Terrain::InitializeMeshes();
 
 	m_terrain = new Terrain();
-
 	m_terrain->SetPosition(glm::vec3(18, -0.01, 18));
 
-	//Create an empty pirate vector.
-	this->m_pirates = std::vector<class Pirate*>();
-
-	this->m_towers = std::vector<class Tower*>();
-
-	this->m_projectiles = std::vector<class Projectile*>();
+	m_pirates = std::vector<class Pirate*>();
+	m_towers = std::vector<class Tower*>();
+	m_projectiles = std::vector<class Projectile*>();
 
 	for(int i = 0; i < 3; i++)
 	{
@@ -71,14 +66,8 @@ bool Game::InitializeObjects()
 	}
 
 	m_treasure_container = new TreasureContainer();
-
 	plane_rg = new PlaneRG();
-	
 	plane_rg->SetPosition(plane_rg->pos);
-
-	test_bill = new BulletBill();
-
-	test_bill->SetPosition(glm::vec3(5, 2, 5));
 
 	return true;
 }
@@ -99,6 +88,8 @@ void Game::Render()
 void Game::Update(float elapsed)
 {
 	m_time += elapsed;
+	plane_rg->Update(this);
+	m_treasure_container->Update(this);
 
 	//Update all the pirates.
 	for (auto pirate : m_pirates)
@@ -116,13 +107,6 @@ void Game::Update(float elapsed)
 			tower->Update(this);
 		}
 	}
-
-	m_treasure_container->Update(this);
-	plane_rg->Update(this);
-	/*test_ball->Update(this);
-	test_tower->Update(this);*/
-	//test_bill->Update(this);
-	if(!delete_all) GameOver();
 }
 
 void Game::DrawGeometry(Renderer* renderer)
@@ -146,12 +130,9 @@ void Game::DrawGeometry(Renderer* renderer)
 		{
 			projectile->DrawGeometry(renderer);
 		}
+		plane_rg->DrawGeometry(renderer);
+		m_treasure_container->DrawGeometry(renderer);
 	}
-	plane_rg->DrawGeometry(renderer);
-	m_treasure_container->DrawGeometry(renderer);
-	/*test_ball->DrawGeometry(renderer);
-	test_tower->DrawGeometry(renderer);*/
-	test_bill->DrawGeometry(renderer);
 }
 
 void Game::DrawGeometryToShadowMap(Renderer* renderer)
@@ -175,18 +156,14 @@ void Game::DrawGeometryToShadowMap(Renderer* renderer)
 		{
 			projectile->DrawGeometryToShadowMap(renderer);
 		}
+		plane_rg->DrawGeometryToShadowMap(renderer);
+		m_treasure_container->DrawGeometryToShadowMap(renderer);
 	}
-	plane_rg->DrawGeometryToShadowMap(renderer);
-	m_treasure_container->DrawGeometryToShadowMap(renderer);
-	/*test_ball->DrawGeometryToShadowMap(renderer);
-	test_tower->DrawGeometryToShadowMap(renderer);*/
-	test_bill->DrawGeometryToShadowMap(renderer);
 }
 
-void Game::SpawnPirate(float dt, glm::vec3 pos)
+void Game::SpawnPirate(float dt)
 {
 	auto pirate = new Pirate(dt);
-	if (finished) pirate->SetPosition(pos);
 	this->m_pirates.push_back(pirate);
 }
 
@@ -259,52 +236,30 @@ void Game::AddTower()
 	this->m_towers.push_back(tower);
 }
 
-void Game::SetPirates(std::vector<Pirate*> m_pirates)
-{
-	this->m_pirates = m_pirates;
-}
-
 void Game::GameOver()
 {
-	if (m_treasure_container->GetCoins() == 0)
+	finished = true;
+
+	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it)
 	{
-		int erase = 0;
-		for (int i = 0; i < m_projectiles.size(); i++)
-		{
-			delete m_projectiles[i];
-			this->m_projectiles.erase(this->m_projectiles.begin() + erase);
-		}
-		erase = 0;
-		for (int i = 0; i < m_towers.size(); i++)
-		{
-			delete m_towers[i];
-			this->m_towers.erase(this->m_towers.begin() + erase);
-		}
-		erase = 0;
-		for (int i = 0; i < m_pirates.size(); i++)
-		{
-			delete m_pirates[i];
-			this->m_pirates.erase(this->m_pirates.begin() + erase);
-		}
-		finished = true;
-		delete_all = true;
+		delete *it;
 	}
-}
+	m_projectiles.clear();
 
+	for (auto it = m_pirates.begin(); it != m_pirates.end(); ++it)
+	{
+		delete *it;
+	}
+	m_pirates.clear();
 
-std::vector<Tower*> Game::GetTowers()
-{
-	return this->m_towers;
-}
-
-std::vector<Pirate*> Game::GetPirates()
-{
-	return this->m_pirates;
-}
-
-std::vector<Projectile*> Game::GetCannonBalls()
-{
-	return this->m_projectiles;
+	float time = 0;
+	for (auto& tile: game_tiles)
+	{
+		time += 0.25f;
+		auto pirate = new Pirate(time);
+		pirate->SetPosition(tile);
+		this->m_pirates.push_back(pirate);
+	}
 }
 
 bool Game::GetGameOver()

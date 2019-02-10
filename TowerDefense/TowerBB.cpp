@@ -33,7 +33,7 @@ void TowerBB::SetUsed(bool used)
 
 void TowerBB::Update(Game* game)
 {
-	if (used)
+	if (used && !game->GetGameOver())
 	{
 		std::vector<Pirate*> pirates = game->m_pirates1();
 		for (Pirate* p : pirates)

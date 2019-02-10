@@ -5,6 +5,8 @@
 #include "CannonBall.h"
 #include <iostream>
 
+# define M_PIF 3.1415926535F
+
 GeometricMesh* m_body_mesh;
 GeometricMesh* m_arm_mesh;
 GeometricMesh* m_left_foot_mesh;
@@ -50,25 +52,38 @@ bool Pirate::InitializeMeshes()
 
 void Pirate::Update(Game* game)
 {
-	auto translate = glm::translate(glm::mat4(1), pos * glm::vec3(4));
-	auto scale = glm::scale(glm::mat4(1), glm::vec3(0.12f));
-	auto rotation = glm::mat4(1);
+	auto rotation = glm::mat4(1.0f);
+	auto feet_rotation_down = 0;
 
-	m_current_tile = std::min(int((game->time() - spawn_time) / SECONDS_PER_TILE / SECONDS_PER_TILE), 28);
-	pos = GetPosAt(game->time());
-	if (m_current_tile < 28) {
-		rotation = glm::inverse(glm::lookAt(game_tiles[m_current_tile], game_tiles[m_current_tile + 1], glm::vec3(0, 1, 0)));
+	if (!game->GetGameOver())
+	{
+		m_current_tile = std::min(int((game->time() - spawn_time) / SECONDS_PER_TILE / SECONDS_PER_TILE), 28);
+		pos = GetPosAt(game->time());
+		if (m_current_tile < 28) {
+			rotation = glm::inverse(glm::lookAt(game_tiles[m_current_tile], game_tiles[m_current_tile + 1], glm::vec3(0, 1, 0)));
+		}
+	} else
+	{
+		pos.y = fmax(sin((game->time() - spawn_time)) * 0.8f, 0);
+		if (pos.y > 0)
+		{
+			const auto modifier = M_PIF * pos.y / 1.6f;
+			rotation = glm::rotate(rotation, modifier, glm::vec3(0.0f, -1, 0.0f));
+			feet_rotation_down = modifier;
+		}
 	}
 
+	const auto translate = glm::translate(glm::mat4(1), pos * glm::vec3(4));
+	const auto scale = glm::scale(glm::mat4(1), glm::vec3(0.12f));
 	m_transformation_matrix = translate * scale * rotation;
 
 	m_body_transformation_matrix = m_transformation_matrix * glm::mat4(1);
-	auto hand_rotation = glm::rotate(glm::mat4(1), glm::sin((game->time() - spawn_time) * 2) * 0.1f, glm::vec3(1, 0, 0));
+	const auto hand_rotation = glm::rotate(glm::mat4(1), glm::sin((game->time() - spawn_time) * 2) * 0.1f, glm::vec3(1, 0, 0));
 	m_arm_transformation_matrix = m_transformation_matrix * glm::translate(glm::mat4(1), glm::vec3(4.5, 12, 0)) * hand_rotation;
 
-	auto feet_rotation = glm::rotate(glm::mat4(1), glm::sin((game->time() - spawn_time) * 4), glm::vec3(1, 0, 0));
+	auto feet_rotation = glm::rotate(glm::mat4(1), (glm::sin((game->time() - spawn_time) * 5) + 1) * 0.17f - feet_rotation_down, glm::vec3(1, 0, 0));
 	m_left_foot_transformation_matrix = m_transformation_matrix * feet_rotation * glm::translate(glm::mat4(1), glm::vec3(-4, 0, -2));
-	feet_rotation = glm::inverse(feet_rotation);
+	feet_rotation = glm::rotate(glm::mat4(1), (glm::sin((game->time() - spawn_time) * 5 + M_PIF) + 1) * 0.17f - feet_rotation_down, glm::vec3(1, 0, 0));
 	m_right_foot_transformation_matrix = m_transformation_matrix * feet_rotation * glm::translate(glm::mat4(1), glm::vec3(4, 0, -2));
 
 	m_body_transformation_matrix_normal = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_body_transformation_matrix))));;

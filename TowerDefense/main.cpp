@@ -237,29 +237,16 @@ int main(int argc, char *argv[])
 				}
 			}
 		}
-		// Compute the ellapsed time
+		// Compute the elapsed time
 		auto simulation_end = chrono::steady_clock::now();
 		float dt = chrono::duration <float>(simulation_end - simulation_start).count(); // in seconds
 		simulation_start = chrono::steady_clock::now();
 
-		if (game->GetGameOver())
-		{
-			if(!over)
-			{
-				for (int i = 0; i < game_tiles->length(); i++)
-				{
-					game->SpawnPirate(game->time(), game_tiles[i]);
-					printf("hi\n");
-				}
-				over = true;
-			}
-		}
-		else
-		{
+		if (!game->GetGameOver()) {
 			passed = (game->time() - start_of_spawns);
 			if (passed >= 10)
 			{
-				game->SpawnPirate(game->time(), glm::vec3(0));
+				game->SpawnPirate(game->time());
 				start_of_spawns = game->time();
 			}
 			if ((game->time() - start_of_towers) >= 30)

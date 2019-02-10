@@ -33,7 +33,7 @@ void TowerMed::SetUsed(bool used)
 
 void TowerMed::Update(Game* game)
 {
-	if (used)
+	if (used && !game->GetGameOver())
 	{
 		std::vector<Pirate*> pirates = game->m_pirates1();
 		for (Pirate* p : pirates)
