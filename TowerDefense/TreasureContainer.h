@@ -20,5 +20,7 @@ public:
 	void Update(Game* game) override;
 	void DrawGeometry(Renderer* renderer) override;
 	void DrawGeometryToShadowMap(Renderer* renderer) override;
+
+	int GetCoins();
 };
 

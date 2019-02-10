@@ -134,6 +134,11 @@ void Pirate::DrawGeometryToShadowMap(Renderer* renderer)
 	renderer->DrawGeometryNodeToShadowMap(m_right_foot, m_right_foot_transformation_matrix, m_right_foot_transformation_matrix_normal);
 }
 
+void Pirate::SetPosition(glm::vec3 pos)
+{
+	this->pos = pos;
+}
+
 glm::vec3 Pirate::GetPos()
 {
 	return this->pos;

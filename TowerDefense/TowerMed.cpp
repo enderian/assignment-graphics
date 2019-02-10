@@ -38,7 +38,7 @@ void TowerMed::Update(Game* game)
 		std::vector<Pirate*> pirates = game->m_pirates1();
 		for (Pirate* p : pirates)
 		{
-			if ((glm::abs(p->GetPos().x - this->pos.x) <= 1.5) && (glm::abs(p->GetPos().z - this->pos.z) <= 1.5) && (game->time() - ready) >= 1)
+			if ((glm::abs(p->GetPos().x - this->pos.x) <= 1.2) && (glm::abs(p->GetPos().z - this->pos.z) <= 1.2) && (game->time() - ready) >= 1)
 			{
 				//printf("Here\n");
 				game->SpawnProjectile(pos, glm::vec3(ceil(p->GetPos().x), p->GetPos().y + 1.40196, ceil(p->GetPos().z)), this);

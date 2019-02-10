@@ -64,6 +64,8 @@ private:
 	std::vector<class Tower*> m_towers;
 	std::vector<class Projectile*> m_projectiles;
 
+	bool finished = false, delete_all = false;
+
 public:
 	Game();
 	~Game();
@@ -89,36 +91,20 @@ public:
 
 	void Update(float elapsed);
 	void Render();
-	void SpawnPirate(float dt);
+	void SpawnPirate(float dt, glm::vec3 pos);
 	void SpawnProjectile(glm::vec3 pos, glm::vec3 dir, Tower* tower);
 	void DeployTower(glm::vec3 pos);
 	void DeployTowerBB(glm::vec3 pos);
 	bool RemoveTower(glm::vec3 pos);
 	void AddTower();
+	void GameOver();
 
 	void DrawGeometry(Renderer* renderer) override;
 	void DrawGeometryToShadowMap(Renderer* renderer) override;
 
-
-	std::vector<Tower*> m_towers1() const
-	{
-		return m_towers;
-	}
-
-	std::vector<Pirate*> m_pirates1() const
-	{
-		return m_pirates;
-	}
-
-	void set_m_pirates(const std::vector<Pirate*>& pirates)
-	{
-		m_pirates = pirates;
-	}
-
-	std::vector<Projectile*> m_projectiles1() const
-	{
-		return m_projectiles;
-	}
+	std::vector<Tower*> GetTowers();
+	std::vector<Pirate*> GetPirates();
+	std::vector<Projectile*> GetCannonBalls();
 
 	void set_m_projectiles(const std::vector<Projectile*>& projectiles)
 	{

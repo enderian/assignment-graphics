@@ -47,6 +47,7 @@ public:
 	void Update(Game* game) override;
 	void DrawGeometry(Renderer* renderer) override;
 	void DrawGeometryToShadowMap(Renderer* renderer) override;
+	void SetPosition(glm::vec3 pos);
 	
 	glm::vec3 GetPosAt(float dt);
 	glm::vec3 GetPos();
