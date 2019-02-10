@@ -18,9 +18,10 @@ CannonBall::CannonBall() : Projectile()
 	m_projectile->Init(m_cannonball_mesh);
 }
 
-CannonBall::CannonBall(glm::vec3 direction, float time)
+CannonBall::CannonBall(glm::vec3 origin, glm::vec3 direction, float time)
 {
 	m_projectile->Init(m_cannonball_mesh);
+	this->origin = origin;
 	this->direction = direction;
 	this->time = time;
 }
@@ -35,8 +36,21 @@ void CannonBall::SetPosition(glm::vec3 position)
 
 void CannonBall::Update(Game* game)
 {
-	const float alpha = (game->time() - this->time) / 5.0f;
+	const float alpha = (game->time() - this->time) / 0.6f;
+	pos = glm::mix(this->origin, this->direction, alpha);
 
-	pos = glm::mix(this->pos, this->direction, alpha);
+	if (pos.y < 0)
+	{
+		auto balls = game->m_projectiles1();
+		for (auto it = balls.begin(); it != balls.end(); ++it) {
+			if (*it == this) {
+				balls.erase(it);
+				game->set_m_projectiles(balls);
+				delete this;
+				return;
+			}
+		}
+	}
+
 	SetPosition(pos);
 }

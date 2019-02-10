@@ -258,3 +258,7 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/TowerDefense/CannonBall_REMOTE_31428.cpp
+/TowerDefense/CannonBall_LOCAL_31428.cpp
+/TowerDefense/CannonBall_BASE_31428.cpp
+/TowerDefense/CannonBall_BACKUP_31428.cpp

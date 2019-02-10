@@ -96,15 +96,34 @@ public:
 	bool RemoveTower(glm::vec3 pos);
 	void AddTower();
 
-	void SetPirates(std::vector<Pirate*> m_pirates);
-
 	void DrawGeometry(Renderer* renderer) override;
 	void DrawGeometryToShadowMap(Renderer* renderer) override;
 
-	std::vector<Tower*> GetTowers();
-	std::vector<Pirate*> GetPirates();
-	std::vector<Projectile*> GetCannonBalls();
 
+	std::vector<Tower*> m_towers1() const
+	{
+		return m_towers;
+	}
+
+	std::vector<Pirate*> m_pirates1() const
+	{
+		return m_pirates;
+	}
+
+	void set_m_pirates(const std::vector<Pirate*>& pirates)
+	{
+		m_pirates = pirates;
+	}
+
+	std::vector<Projectile*> m_projectiles1() const
+	{
+		return m_projectiles;
+	}
+
+	void set_m_projectiles(const std::vector<Projectile*>& projectiles)
+	{
+		m_projectiles = projectiles;
+	}
 };
 
 class GameObject : public Renderable

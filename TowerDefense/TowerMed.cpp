@@ -35,7 +35,7 @@ void TowerMed::Update(Game* game)
 {
 	if (used)
 	{
-		std::vector<Pirate*> pirates = game->GetPirates();
+		std::vector<Pirate*> pirates = game->m_pirates1();
 		for (Pirate* p : pirates)
 		{
 			if ((glm::abs(p->GetPos().x - this->pos.x) <= 1.5) && (glm::abs(p->GetPos().z - this->pos.z) <= 1.5) && (game->time() - ready) >= 1)

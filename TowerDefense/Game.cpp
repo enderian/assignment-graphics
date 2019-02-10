@@ -183,8 +183,9 @@ void Game::SpawnProjectile(glm::vec3 pos, glm::vec3 dir, Tower* tower)
 {
 	if(dynamic_cast<TowerMed*>(tower))
 	{
-		auto projectile = new CannonBall(dir, time());
-		projectile->SetPosition(glm::vec3(pos.x - 0.00404, 3.8, pos.z - 0.03032));
+		auto origin = glm::vec3(pos.x - 0.00404, 3.8, pos.z - 0.03032);
+		auto projectile = new CannonBall(origin, dir, time());
+		projectile->SetPosition(origin);
 		this->m_projectiles.push_back(projectile);
 	}
 	else if(dynamic_cast<TowerBB*>(tower))
@@ -245,25 +246,4 @@ void Game::AddTower()
 {
 	auto tower = new TowerMed(time());
 	this->m_towers.push_back(tower);
-}
-
-void Game::SetPirates(std::vector<Pirate*> m_pirates)
-{
-	this->m_pirates = m_pirates;
-}
-
-
-std::vector<Tower*> Game::GetTowers()
-{
-	return this->m_towers;
-}
-
-std::vector<Pirate*> Game::GetPirates()
-{
-	return this->m_pirates;
-}
-
-std::vector<Projectile*> Game::GetCannonBalls()
-{
-	return this->m_projectiles;
 }

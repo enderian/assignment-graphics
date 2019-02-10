@@ -12,6 +12,8 @@ GeometricMesh* m_right_foot_mesh;
 
 Pirate::Pirate()
 {
+	health = 100;
+
 	m_body = new GeometryNode();
 	m_body->Init(m_body_mesh);
 	m_arm = new GeometryNode();
@@ -22,16 +24,8 @@ Pirate::Pirate()
 	m_right_foot->Init(m_right_foot_mesh);
 }
 
-Pirate::Pirate(float spawn_time)
+Pirate::Pirate(float spawn_time): Pirate()
 {
-	m_body = new GeometryNode();
-	m_body->Init(m_body_mesh);
-	m_arm = new GeometryNode();
-	m_arm->Init(m_arm_mesh);
-	m_left_foot = new GeometryNode();
-	m_left_foot->Init(m_left_foot_mesh);
-	m_right_foot = new GeometryNode();
-	m_right_foot->Init(m_right_foot_mesh);
 	this->spawn_time = spawn_time;
 }
 
@@ -56,13 +50,12 @@ bool Pirate::InitializeMeshes()
 
 void Pirate::Update(Game* game)
 {
-	m_current_tile = std::min(int((game->time() - spawn_time) / SECONDS_PER_TILE / SECONDS_PER_TILE), 28);
-	pos = GetPosAt(game->time());
-
 	auto translate = glm::translate(glm::mat4(1), pos * glm::vec3(4));
 	auto scale = glm::scale(glm::mat4(1), glm::vec3(0.12f));
 	auto rotation = glm::mat4(1);
 
+	m_current_tile = std::min(int((game->time() - spawn_time) / SECONDS_PER_TILE / SECONDS_PER_TILE), 28);
+	pos = GetPosAt(game->time());
 	if (m_current_tile < 28) {
 		rotation = glm::inverse(glm::lookAt(game_tiles[m_current_tile], game_tiles[m_current_tile + 1], glm::vec3(0, 1, 0)));
 	}
@@ -83,22 +76,43 @@ void Pirate::Update(Game* game)
 	m_left_foot_transformation_matrix_normal = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_left_foot_transformation_matrix))));
 	m_right_foot_transformation_matrix_normal = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_right_foot_transformation_matrix))));
 
-	std::vector<Projectile*> m_projectiles = game->GetCannonBalls();
-	glm::vec3 center(pos.x*(-.071464) + pos.x, pos.y*1.40196 + pos.y, pos.z*(-.51288) + pos.z);
-	for (int i = 0; i < m_projectiles.size(); i++)
+	auto m_projectiles = game->m_projectiles1();
+	const glm::vec3 center(pos.x*(-.071464) + pos.x, pos.y*1.40196 + pos.y, pos.z*(-.51288) + pos.z);
+	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it)
 	{
-		int erase = 0;
-		glm::vec3 p_pos = m_projectiles[i]->GetPos();
-		//std::cout << p_pos.x << " " << p_pos.y << " " << p_pos.z << std::endl;
-		glm::vec3 dif(glm::abs(center - p_pos));
-		//std::cout << dif.x << " " << dif.y << " " << dif.z << std::endl;
+		auto projectile = *it;
+		auto p_pos = projectile->GetPos();
+		const auto dif(glm::abs(center - p_pos));
 		if(dif.x < .52 && dif.y < 1.41 && dif.z < 3.01)
 		{
-			if(dynamic_cast<CannonBall*>(m_projectiles[i]) && !m_projectiles[i]->GetHit())
+			//Reduce health.
+			if(dynamic_cast<CannonBall*>(projectile))
 			{
 				health -= 25;
-				printf("KAPPA\n");
-				m_projectiles[i]->SetHit(true);
+			}
+			//If still alive, delete cannonball.
+			if (health > 0)
+			{
+				m_projectiles.erase(it);
+				game->set_m_projectiles(m_projectiles);
+				delete projectile;
+				return;
+			}
+		}
+	}
+
+	//If dead, delete us.
+	if (health <= 0)
+	{
+		auto pirates = game->m_pirates1();
+		for (auto it = pirates.begin(); it != pirates.end(); ++it)
+		{
+			if (this == *it)
+			{
+				pirates.erase(it);
+				game->set_m_pirates(pirates);
+				delete this;
+				return;
 			}
 		}
 	}

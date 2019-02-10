@@ -33,7 +33,7 @@ class Pirate : public GameObject
 
 	float spawn_time;
 
-	int health = 50;
+	int health;
 
 public:
 	Pirate();

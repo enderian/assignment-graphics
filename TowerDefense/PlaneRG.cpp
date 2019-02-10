@@ -48,7 +48,7 @@ void PlaneRG::Update(Game* game)
 		}
 		else curr_plane = m_plane_g;
 	}
-	std::vector<Tower*> towers = game->GetTowers();
+	std::vector<Tower*> towers = game->m_towers1();
 	for (auto t : towers)
 	{
 		if(t->GetPos().x == pos.x && t->GetPos().z == pos.z && t->IsUsed())

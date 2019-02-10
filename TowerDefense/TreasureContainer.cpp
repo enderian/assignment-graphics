@@ -18,29 +18,26 @@ TreasureContainer::TreasureContainer()
 
 void TreasureContainer::Update(Game* game)
 {
-	std::vector<Pirate*> m_pirates = game->GetPirates();
-	glm::vec3 center(pos.x*(-.0176) + pos.x, pos.y*1.08174 + pos.y, pos.z*(-.80619) + pos.z);
-	for (int i = 0; i < m_pirates.size(); i++)
+	auto m_pirates = game->m_pirates1();
+	const glm::vec3 center(pos.x*(-.0176) + pos.x, pos.y*1.08174 + pos.y, pos.z*(-.80619) + pos.z);
+	for (auto it = m_pirates.begin(); it != m_pirates.end(); ++it)
 	{
-		auto pirate = m_pirates[i];
-		int erase = 0;
-		glm::vec3 p_pos = pirate->GetPos();
+		auto pirate = *it;
+		const auto p_pos = pirate->GetPos();
 		glm::vec3 pirate_center(p_pos.x*(-.071464) + p_pos.x, p_pos.y*1.40196 + p_pos.y, p_pos.z*(-.51288) + p_pos.z);
-		glm::vec3 dif(glm::abs(center - pirate_center));
+		const auto dif(glm::abs(center - pirate_center));
 		if (dif.x < .33 && dif.y < .33 && dif.z < .33)
 		{
 			m_coins--;
-			erase = i;
 			delete pirate;
-			m_pirates.erase(m_pirates.begin() + erase);
-			game->SetPirates(m_pirates);
+			m_pirates.erase(it);
+			game->set_m_pirates(m_pirates);
+			return;
 		}
 	}
 }
 
-TreasureContainer::~TreasureContainer()
-{
-}
+TreasureContainer::~TreasureContainer() = default;
 
 void TreasureContainer::DrawGeometry(Renderer* renderer)
 {
