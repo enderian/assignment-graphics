@@ -40,7 +40,8 @@ void TowerBB::Update(Game* game)
 		{
 			if ((glm::abs(p->GetPos().x - this->pos.x) <= 4) && (glm::abs(p->GetPos().z - this->pos.z) <= 4) && (game->time() - ready) >= 1)
 			{
-				game->SpawnProjectile(pos, glm::vec3(ceil(p->GetPos().x), p->GetPos().y + .5, ceil(p->GetPos().z)), this);
+				auto pos = p->GetPosAt(game->time() + 1.0f);
+				game->SpawnProjectile(pos, glm::vec3(ceil(pos.x), pos.y + 1.40196, ceil(pos.z)), this);
 				ready = game->time();
 			}
 		}

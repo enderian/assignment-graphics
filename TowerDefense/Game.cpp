@@ -3,6 +3,7 @@
 #include "Pirate.h"
 #include "Road.h"
 #include "Treasure.h"
+#include "TreasureContainer.h"
 #include "PlaneRG.h"
 #include "Tower.h"
 #include "TowerMed.h"
@@ -69,14 +70,7 @@ bool Game::InitializeObjects()
 		this->m_roads.push_back(road);
 	}
 
-	this->m_treasures = std::vector<class Treasure*>();
-
-	for (auto tr_pos : treasure_locs)
-	{
-		auto treasure = new Treasure();
-		treasure->SetPosition(tr_pos);
-		this->m_treasures.push_back(treasure);
-	}
+	m_treasure_container = new TreasureContainer();
 
 	plane_rg = new PlaneRG();
 	
@@ -119,10 +113,8 @@ void Game::Update(float elapsed)
 	{
 		tower->Update(this);
 	}
-	for (auto chest : m_treasures)
-	{
-		chest->Update(this);
-	}
+
+	m_treasure_container->Update(this);
 	plane_rg->Update(this);
 	/*test_ball->Update(this);
 	test_tower->Update(this);*/
@@ -140,10 +132,6 @@ void Game::DrawGeometry(Renderer* renderer)
 	{
 		road->DrawGeometry(renderer);
 	}
-	for (auto treasure : m_treasures)
-	{
-		treasure->DrawGeometry(renderer);
-	}
 	for (auto tower : m_towers)
 	{
 		if(tower->IsUsed()) tower->DrawGeometry(renderer);
@@ -153,6 +141,7 @@ void Game::DrawGeometry(Renderer* renderer)
 		projectile->DrawGeometry(renderer);
 	}
 	plane_rg->DrawGeometry(renderer);
+	m_treasure_container->DrawGeometry(renderer);
 	/*test_ball->DrawGeometry(renderer);
 	test_tower->DrawGeometry(renderer);*/
 	test_bill->DrawGeometry(renderer);
@@ -169,10 +158,6 @@ void Game::DrawGeometryToShadowMap(Renderer* renderer)
 	{
 		road->DrawGeometryToShadowMap(renderer);
 	}
-	for (auto treasure : m_treasures)
-	{
-		treasure->DrawGeometryToShadowMap(renderer);
-	}
 	for (auto tower : m_towers)
 	{
 		if (tower->IsUsed()) tower->DrawGeometryToShadowMap(renderer);
@@ -182,6 +167,7 @@ void Game::DrawGeometryToShadowMap(Renderer* renderer)
 		projectile->DrawGeometryToShadowMap(renderer);
 	}
 	plane_rg->DrawGeometryToShadowMap(renderer);
+	m_treasure_container->DrawGeometryToShadowMap(renderer);
 	/*test_ball->DrawGeometryToShadowMap(renderer);
 	test_tower->DrawGeometryToShadowMap(renderer);*/
 	test_bill->DrawGeometryToShadowMap(renderer);

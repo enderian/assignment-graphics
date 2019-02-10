@@ -52,6 +52,7 @@ private:
 	class Renderer* m_renderer;
 	class PlaneRG* plane_rg;
 	class Terrain* m_terrain;
+	class TreasureContainer* m_treasure_container;
 
 	//Testing
 	class CannonBall* test_ball;
@@ -59,7 +60,6 @@ private:
 	class BulletBill* test_bill;
 
 	std::vector<class Road*> m_roads;
-	std::vector<class Treasure*> m_treasures;
 	std::vector<class Pirate*> m_pirates;
 	std::vector<class Tower*> m_towers;
 	std::vector<class Projectile*> m_projectiles;

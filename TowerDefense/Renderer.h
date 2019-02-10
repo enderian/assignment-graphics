@@ -98,6 +98,7 @@ public:
 class Renderable
 {
 public:
+	virtual ~Renderable() = default;
 	virtual void DrawGeometry(class Renderer* renderer) = 0;
 	virtual void DrawGeometryToShadowMap(class Renderer* renderer) = 0;
 };

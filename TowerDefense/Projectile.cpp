@@ -14,12 +14,7 @@ Projectile::~Projectile()
 
 void Projectile::Update(Game* game)
 {
-	//TODO FIND THE RELATIVE POSITIONS FOR THE PROJECTILE FROM THE TOWER
-	/*pos.z += 0.001;
-	pos.y -= 0.001;
-	pos.x += 0.001;*/
 	
-	//SetPosition(pos);
 }
 
 void Projectile::DrawGeometry(Renderer* renderer)
