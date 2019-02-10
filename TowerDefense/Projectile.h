@@ -14,6 +14,7 @@ protected:
 	glm::mat4 m_transformation_matrix_normal;
 	class GeometryNode* m_projectile;
 	glm::vec3 pos;
+	bool hit = false;
 
 public:
 	Projectile();
@@ -25,8 +26,10 @@ public:
 	void Update(Game* game) override;
 	void DrawGeometry(class Renderer* renderer) override;
 	void DrawGeometryToShadowMap(class Renderer* renderer) override;
+	void SetHit(bool hit);
 
 	glm::vec3 GetPos();
+	bool GetHit();
 };
 
 #endif
