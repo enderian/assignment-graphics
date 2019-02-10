@@ -9,6 +9,7 @@
 #include "Terrain.h"
 #include "OBJLoader.h"
 #include <iostream>
+#include "Hud.h"
 
 Game::Game()
 {
@@ -17,6 +18,7 @@ Game::Game()
 
 Game::~Game()
 {
+	delete m_hud;
 	delete m_renderer;
 }
 
@@ -29,6 +31,7 @@ bool Game::initialize_objects()
 {
 	//Initialize the meshes into memory.
 	OBJLoader loader;
+	Hud::initialize_meshes(loader);
 	Pirate::initialize_meshes(loader);
 	Road::initialize_meshes(loader);
 	Treasure::initialize_meshes(loader);
@@ -39,6 +42,8 @@ bool Game::initialize_objects()
 
 	m_terrain = new Terrain();
 	m_terrain->set_position(glm::vec3(18, -0.01, 18));
+
+	m_hud = new Hud();
 
 	//Create an empty pirate vector.
 	this->m_pirates = std::vector<class Pirate*>();
@@ -82,7 +87,6 @@ void Game::render()
 {
 	m_renderer->RenderGeometry(this);
 	m_renderer->RenderShadowMaps(this);
-	//m_renderer->RenderHud();
 	m_renderer->RenderToOuterRenderBuffer();
 }
 

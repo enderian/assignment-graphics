@@ -41,6 +41,16 @@ bool init()
 		return false;
 	}
 
+	SDL_version compiled;
+	SDL_version linked;
+
+	SDL_VERSION(&compiled);
+	SDL_GetVersion(&linked);
+	printf("We compiled against SDL version %d.%d.%d ...\n",
+		compiled.major, compiled.minor, compiled.patch);
+	printf("But we are linking against SDL version %d.%d.%d.\n",
+		linked.major, linked.minor, linked.patch);
+
 	// use Double Buffering
 	if (SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1) < 0)
 		cout << "Error: No double buffering" << endl;

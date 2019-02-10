@@ -60,6 +60,7 @@ private:
 	class Renderer* m_renderer;
 	class SelectionPlane* m_selection_plane;
 	class Terrain* m_terrain;
+	class Hud* m_hud;
 
 	std::vector<class Road*> m_roads;
 	std::vector<class Treasure*> m_treasures;

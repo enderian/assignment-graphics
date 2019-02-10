@@ -48,34 +48,25 @@ bool Pirate::initialize_meshes(OBJLoader& loader)
 void Pirate::update(Game* game)
 {
 	//Calculate the current tile.
-
-	int current_tile = (game->time() - m_spawn_time) / PIRATE_SPEED;
-	auto alpha = fmod(game->time() - m_spawn_time, PIRATE_SPEED) / PIRATE_SPEED;
-
-	auto translate = glm::mat4(1);
+	auto current_tile = static_cast<int>(floor((game->time() - m_spawn_time) / PIRATE_SPEED));
+	glm::mat4 rotation;
 	auto scale = glm::scale(glm::mat4(1), glm::vec3(PIRATE_SCALE));
-	auto rotation = glm::mat4(1);
-
-	glm::vec3 position;
 
 	if (current_tile >= 28)
 	{
-		current_tile = 28;
-		position = game_tiles[current_tile];
-		translate = glm::translate(translate, position);
 		rotation = glm::inverse(glm::lookAt(game_tiles[current_tile - 1], game_tiles[current_tile], glm::vec3(0, 1, 0)));
 	} 
 	else
 	{
-		position = glm::mix(game_tiles[current_tile], game_tiles[current_tile + 1], alpha);
-		translate = glm::translate(translate, position);
 		rotation = glm::inverse(glm::lookAt(game_tiles[current_tile], game_tiles[current_tile + 1], glm::vec3(0, 1, 0)));
 	}
 
+	auto position = location_at(game->time());
+	auto translate = glm::translate(glm::mat4(1), position);
 	set_position(position);
-	m_transformation_matrix = rotation * translate * scale;
 
-	m_body_transformation_matrix = m_transformation_matrix * glm::mat4(1);
+	m_transformation_matrix = translate * rotation * scale;
+	m_body_transformation_matrix = m_transformation_matrix;
 
 	auto hand_rotation = glm::rotate(glm::mat4(1), glm::sin((game->time() - m_spawn_time) * 2) * 0.1f, glm::vec3(1, 0, 0));
 	m_arm_transformation_matrix = m_transformation_matrix * glm::translate(glm::mat4(1), glm::vec3(4.5, 12, 0)) * hand_rotation;
@@ -95,6 +86,27 @@ void Pirate::update(Game* game)
 	{
 		//game->KillPirate(this);
 	}
+}
+
+
+glm::vec3 Pirate::location_at(float time) const
+{
+	auto current_tile = static_cast<int>(floor((time - m_spawn_time) / PIRATE_SPEED));
+	auto alpha = fmod(time - m_spawn_time, PIRATE_SPEED) / PIRATE_SPEED;
+
+	std::cout << current_tile << std::endl;
+
+	glm::vec3 position;
+	if (current_tile >= 28)
+	{
+		current_tile = 28;
+		position = game_tiles[current_tile];
+	}
+	else
+	{
+		position = glm::mix(game_tiles[current_tile], game_tiles[current_tile + 1], alpha);
+	}
+	return position;
 }
 
 void Pirate::draw_geometry(Renderer* renderer)

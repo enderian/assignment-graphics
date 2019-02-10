@@ -36,8 +36,10 @@ protected:
 
 	// Geometry Rendering Intermediate Buffer
 	GLuint m_fbo;
+	GLuint m_fbo_hud;
 	GLuint m_fbo_depth_texture;
 	GLuint m_fbo_texture;
+
 	GLuint m_texture_green;
 	GLuint m_texture_red;
 
@@ -78,11 +80,12 @@ public:
 	// Passes
 	void RenderShadowMaps(Renderable* geometries);
 	void RenderGeometry(Renderable* geometries);
+	void RenderHud(Renderable* renderable);
 	void PostRender();
-	//void RenderHud();
 	void RenderToOuterRenderBuffer();
 
 	void DrawGeometryNode(class GeometryNode* node, glm::mat4 model_matrix, glm::mat4 normal_matrix);
+	void DrawSimpleGeometryNode(GeometryNode* node);
 	void DrawGeometryNodeToShadowMap(class GeometryNode* node, glm::mat4 model_matrix, glm::mat4 normal_matrix);
 
 	// Set functions

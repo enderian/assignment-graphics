@@ -1,7 +1,7 @@
 #ifndef PIRATE_H
 #define PIRATE_H
 
-#define PIRATE_SPEED 1.0f
+#define PIRATE_SPEED 5.0f
 #define PIRATE_INITIAL_HEALTH 100.0f
 #define PIRATE_SCALE 0.12f
 
@@ -42,6 +42,8 @@ public:
 	virtual ~Pirate();
 
 	static bool initialize_meshes(OBJLoader& loader);
+
+	glm::vec3 location_at(float time) const;
 
 	void update(Game* game) override;
 	void draw_geometry(Renderer* renderer) override;
