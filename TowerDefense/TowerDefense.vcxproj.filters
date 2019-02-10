@@ -78,6 +78,9 @@
     <ClCompile Include="TowerMed.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TreasureContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OBJLoader.h">
@@ -138,6 +141,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TowerMed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TreasureContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

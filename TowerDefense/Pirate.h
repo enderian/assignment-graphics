@@ -48,6 +48,7 @@ public:
 	void DrawGeometry(Renderer* renderer) override;
 	void DrawGeometryToShadowMap(Renderer* renderer) override;
 	
+	glm::vec3 GetPosAt(float dt);
 	glm::vec3 GetPos();
 };
 #endif // PIRATE_H

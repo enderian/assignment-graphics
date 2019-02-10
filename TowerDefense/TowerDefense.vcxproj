@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="BulletBill.cpp" />
     <ClCompile Include="CannonBall.cpp" />
+    <ClCompile Include="TreasureContainer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GeometricMesh.cpp" />
     <ClCompile Include="GeometryNode.cpp" />
@@ -44,6 +45,7 @@
   <ItemGroup>
     <ClInclude Include="BulletBill.h" />
     <ClInclude Include="CannonBall.h" />
+    <ClInclude Include="TreasureContainer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GeometricMesh.h" />
     <ClInclude Include="GeometryNode.h" />

@@ -2,6 +2,7 @@
 #define TREASURE_H
 
 #include "GeometryNode.h"
+#include "Pirate.h"
 #include "Renderer.h"
 #include "Game.h"
 
@@ -12,10 +13,8 @@ private:
 	class GeometryNode* m_treasure;
 	glm::mat4 m_transformation_matrix;
 	glm::mat4 m_transformation_matrix_normal;
-	glm::vec3 pos;
 
 public:
-	int coins = 100;
 	Treasure();
 	virtual ~Treasure();
 
