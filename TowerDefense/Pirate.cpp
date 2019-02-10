@@ -4,6 +4,11 @@
 #include "Projectile.h"
 #include "CannonBall.h"
 #include <iostream>
+#include <windows.h>
+#include <mmsystem.h>
+
+#undef min
+#undef max
 
 # define M_PIF 3.1415926535F
 
@@ -103,6 +108,7 @@ void Pirate::Update(Game* game)
 			//Reduce health.
 			if(dynamic_cast<CannonBall*>(projectile))
 			{
+				PlaySound(TEXT("../assets/Sounds/hit.wav"), NULL, SND_ASYNC | SND_FILENAME | SND_PURGE);
 				health -= 25;
 			}
 			//If still alive, delete cannonball.
