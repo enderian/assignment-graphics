@@ -52,16 +52,16 @@ TreasureContainer::~TreasureContainer() = default;
 
 void TreasureContainer::draw_geometry(Renderer* renderer)
 {
-	if (m_coins > 4) m_treasure_1->draw_geometry(renderer);
+	if (m_coins > 2) m_treasure_1->draw_geometry(renderer);
 	if (m_coins > 0) m_treasure_2->draw_geometry(renderer);
-	if (m_coins > 2) m_treasure_3->draw_geometry(renderer);
+	if (m_coins > 1) m_treasure_3->draw_geometry(renderer);
 }
 
 void TreasureContainer::draw_geometry_to_shadow_map(Renderer* renderer)
 {
-	if (m_coins > 4) m_treasure_1->draw_geometry_to_shadow_map(renderer);
+	if (m_coins > 2) m_treasure_1->draw_geometry_to_shadow_map(renderer);
 	if (m_coins > 0) m_treasure_2->draw_geometry_to_shadow_map(renderer);
-	if (m_coins > 2) m_treasure_3->draw_geometry_to_shadow_map(renderer);
+	if (m_coins > 1) m_treasure_3->draw_geometry_to_shadow_map(renderer);
 }
 
 int TreasureContainer::GetCoins()
