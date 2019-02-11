@@ -9,7 +9,6 @@
 #include "TowerMed.h"
 #include "TowerBB.h"
 #include "CannonBall.h"
-#include "BulletBill.h"
 #include "Terrain.h"
 #include <glm/gtc/matrix_transform.inl>
 #include "OBJLoader.h"
@@ -40,7 +39,6 @@ bool Game::initialize_objects()
 	TowerMed::InitializeMeshes();
 	TowerBB::InitializeMeshes();
 	CannonBall::InitializeMeshes();
-	BulletBill::initialize_meshes();
 	Terrain::InitializeMeshes();
 
 	m_terrain = new Terrain();
@@ -174,12 +172,6 @@ void Game::spawn_projectile(glm::vec3 pos, glm::vec3 dir, Tower* tower)
 		auto origin = glm::vec3(pos.x - 0.00404, 3.8, pos.z - 0.03032);
 		auto projectile = new CannonBall(origin, dir, time());
 		projectile->SetPosition(origin);
-		this->m_projectiles.push_back(projectile);
-	}
-	else if(dynamic_cast<TowerBB*>(tower))
-	{
-		auto projectile = new BulletBill(dir, time());
-		projectile->set_position(glm::vec3(pos.x - 0.006565, 6.175, pos.z - 0.04927));
 		this->m_projectiles.push_back(projectile);
 	}
 }

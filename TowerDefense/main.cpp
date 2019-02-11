@@ -6,13 +6,15 @@
 #include "Renderer.h"
 #include "Game.h"
 #include "PlaneRG.h"
-#include "freeglut/freeglut.h"
+#include <thread>
 
 using namespace std;
 
+#ifdef nvidia
 extern "C" {
 	_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
 }
+#endif
 
 //Screen attributes
 SDL_Window * window;
@@ -84,8 +86,6 @@ bool init()
 	game = new Game();
 	bool engine_initialized = game->initialize_renderer(SCREEN_WIDTH, SCREEN_HEIGHT);
 	engine_initialized |= game->initialize_objects();
-
-	mciSendString(TEXT("open \"*.mp3\" type mpegvideo alias mp3"), NULL, 0, NULL);
 	
 	return engine_initialized;
 }
@@ -109,8 +109,6 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	glutInit(&argc, argv);
-
 	//Quit flag
 	bool quit = false;
 	bool mouse_button_pressed = false;
@@ -122,6 +120,7 @@ int main(int argc, char *argv[])
 	float start_of_towers = game->time();
 	float start_of_additions = game->time();
 	boolean allowed = false;
+	int remaining = 0, init_time = game->time();
 	double passed;
 	// Wait for user exit
 	while (quit == false)
@@ -199,6 +198,8 @@ int main(int argc, char *argv[])
 			passed = (game->time() - start_of_spawns);
 			if (passed >= 10 - (9 * (game->time() / 300.0f)) - rand() % 2)
 			{
+				remaining = rand() % 10 + 1;
+				init_time = game->time();
 				game->spawn_pirate(game->time());
 				start_of_spawns = game->time();
 			}

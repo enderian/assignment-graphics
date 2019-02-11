@@ -36,7 +36,7 @@ void CannonBall::SetPosition(glm::vec3 position)
 
 void CannonBall::update(Game* game)
 {
-	const float alpha = (game->time() - this->time) / 0.6f;
+	const float alpha = (game->time() - this->time) / 0.2f;
 	m_position = glm::mix(this->origin, this->direction, alpha);
 
 	if (m_position.y < 0)

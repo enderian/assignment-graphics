@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BulletBill.cpp" />
     <ClCompile Include="CannonBall.cpp" />
     <ClCompile Include="TreasureContainer.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -43,7 +42,6 @@
     <ClCompile Include="Treasure.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BulletBill.h" />
     <ClInclude Include="CannonBall.h" />
     <ClInclude Include="TreasureContainer.h" />
     <ClInclude Include="Game.h" />
@@ -144,7 +142,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)extras\lib\$(PlatformName);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2_image.lib;glew32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2_image.lib;glew32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>echo copy "$(SolutionDir)extras\bin\$(PlatformShortName)\*.dll" "$(OutDir)"
@@ -192,7 +190,7 @@ copy "$(SolutionDir)extras\bin\$(PlatformShortName)\*.dll" "$(OutDir)"</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)extras\lib\$(PlatformName);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2_image.lib;glew32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;freeglut.lib;%(AdditionalDependencies)winmm.lib;</AdditionalDependencies>
+      <AdditionalDependencies>SDL2_image.lib;glew32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>echo copy "$(SolutionDir)extras\bin\$(PlatformShortName)\*.dll" "$(OutDir)"

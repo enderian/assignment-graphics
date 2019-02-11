@@ -69,9 +69,6 @@
     <ClCompile Include="Terrain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BulletBill.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TowerBB.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -132,9 +129,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Terrain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BulletBill.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TowerBB.h">

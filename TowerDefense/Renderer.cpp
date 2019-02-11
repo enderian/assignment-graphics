@@ -7,7 +7,6 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "OBJLoader.h"
 #include "TextureManager.h"
-#include "freeglut/freeglut.h"
 #include "GLEW/glew.h"
 
 // RENDERER
@@ -169,16 +168,6 @@ bool Renderer::InitRenderingTechniques()
 	m_spot_light_shadow_map_program.LoadUniform("uniform_projection_matrix");
 	m_spot_light_shadow_map_program.LoadUniform("uniform_view_matrix");
 	m_spot_light_shadow_map_program.LoadUniform("uniform_model_matrix");
-	
-	//Hud Program
-	/*vertex_shader_path = "../assets/Shaders/hud.vert";
-	fragment_shader_path = "../assets/Shaders/hud.frag";
-	m_hud_program.LoadVertexShaderFromFile(vertex_shader_path.c_str());
-	m_hud_program.LoadFragmentShaderFromFile(fragment_shader_path.c_str());
-	initialized = initialized && m_hud_program.CreateProgram();
-	m_hud_program.LoadUniform("uniform_texture");
-	m_hud_program.LoadUniform("uniform_projection_inverse_matrix");*/
-	
 
 	return initialized;
 }
