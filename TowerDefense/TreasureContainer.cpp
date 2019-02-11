@@ -9,7 +9,8 @@
 
 TreasureContainer::TreasureContainer()
 {
-	pos = treasure_locations[1];
+	m_position = treasure_locations[1];
+	m_coins = 3;
 
 	m_treasure_1 = new Treasure();
 	m_treasure_1->SetPosition(treasure_locations[0]);
@@ -23,7 +24,7 @@ TreasureContainer::TreasureContainer()
 void TreasureContainer::update(Game* game)
 {
 	auto m_pirates = game->m_pirates1();
-	const glm::vec3 center(pos.x*(-.0176) + pos.x, pos.y*1.08174 + pos.y, pos.z*(-.80619) + pos.z);
+	const glm::vec3 center(m_position.x*(-.0176) + m_position.x, m_position.y*1.08174 + m_position.y, m_position.z*(-.80619) + m_position.z);
 	for (auto it = m_pirates.begin(); it != m_pirates.end(); ++it)
 	{
 		auto pirate = *it;

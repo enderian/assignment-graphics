@@ -6,8 +6,8 @@ class TreasureContainer: public GameObject
 {
 private:
 
-	int m_coins = 6;
-	glm::vec3 pos;
+	int m_coins;
+	glm::vec3 m_position;
 
 	class Treasure* m_treasure_1;
 	class Treasure* m_treasure_2;
