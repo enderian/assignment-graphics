@@ -3,7 +3,8 @@
 
 #include <vector>
 #include <SDL2/SDL.h>
-#define TOTAL_GAME_TIMES = 29;
+
+#define GAME_TILES_ALL 29
 
 const glm::vec3 game_tiles[] = {
 	glm::vec3(0, 0, 0),
@@ -37,7 +38,7 @@ const glm::vec3 game_tiles[] = {
 	glm::vec3(6, 0, 0)
 };
 
-const glm::vec3 treasure_locs[] = {
+const glm::vec3 treasure_locations[] = {
 	glm::vec3(5, 0, -.5),
 	glm::vec3(6, 0, -.5),
 	glm::vec3(7, 0, -.5)
@@ -46,60 +47,92 @@ const glm::vec3 treasure_locs[] = {
 class Game: public Renderable
 {
 private:
-	SDL_Event event;
+	SDL_Event m_event;
 
 	float m_time = 0.0f;
 	class Renderer* m_renderer;
 	class PlaneRG* plane_rg;
-	class CannonBall* test_ball;
 	class Terrain* m_terrain;
-	glm::mat4 m_terrain_transformation_matrix;
-	glm::mat4 m_terrain_transformation_matrix_normal;
+	class TreasureContainer* m_treasure_container;
 
-	std::vector<class Pirate*> m_pirates;
 	std::vector<class Road*> m_roads;
-	std::vector<class Treasure*> m_treasures;
+	std::vector<class Pirate*> m_pirates;
 	std::vector<class Tower*> m_towers;
+	std::vector<class Projectile*> m_projectiles;
+
+	bool m_finished = false;
 
 public:
 	Game();
 	~Game();
 
-	float time()
+	float time() const
 	{
 		return m_time;
 	}
 
-	Renderer* renderer()
+	Renderer* renderer() const
 	{
 		return m_renderer;
 	}
 
-	PlaneRG* getPlaneRG()
+	PlaneRG* get_plane_rg() const
 	{
 		return plane_rg;
 	}
 
-	bool InitializeRenderer(int SCREEN_WIDTH, int SCREEN_HEIGHT);
-	bool InitializeObjects();
-	bool InitializeLogic();
+	bool initialize_renderer(int SCREEN_WIDTH, int SCREEN_HEIGHT);
+	bool initialize_objects();
+	bool initialize_logic();
 
-	void Update(float elapsed);
-	void Render();
-	void SpawnPirate(float dt);
-	void DeployTower(glm::vec3 pos);
-	bool RemoveTower(glm::vec3 pos);
-	void AddTower();
+	void update(float elapsed);
+	void render();
+	void spawn_pirate(float dt);
+	void spawn_projectile(glm::vec3 pos, glm::vec3 dir, Tower* tower);
+	void deploy_tower(glm::vec3 pos);
+	void deploy_tower_bb(glm::vec3 pos);
+	bool remove_tower(glm::vec3 pos);
+	void add_tower();
+	void game_over();
+	bool get_game_over();
 
-	void DrawGeometry(Renderer* renderer) override;
-	void DrawGeometryToShadowMap(Renderer* renderer) override;
+	void draw_geometry(Renderer* renderer) override;
+	void draw_geometry_to_shadow_map(Renderer* renderer) override;
 
-	std::vector<Tower*> GetTowers();
+	std::vector<Pirate*> m_pirates1() const
+	{
+		return m_pirates;
+	}
+
+	void set_m_pirates(const std::vector<Pirate*>& pirates)
+	{
+		m_pirates = pirates;
+	}
+
+	std::vector<Tower*> m_towers1() const
+	{
+		return m_towers;
+	}
+
+	void set_m_towers(const std::vector<Tower*>& towers)
+	{
+		m_towers = towers;
+	}
+
+	std::vector<Projectile*> m_projectiles1() const
+	{
+		return m_projectiles;
+	}
+
+	void set_m_projectiles(const std::vector<Projectile*>& projectiles)
+	{
+		m_projectiles = projectiles;
+	}
 };
 
 class GameObject : public Renderable
 {
 public:
-	virtual void Update(Game* game) = 0;
+	virtual void update(Game* game) = 0;
 };
 #endif // GAME_H

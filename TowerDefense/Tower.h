@@ -7,27 +7,26 @@
 
 class Tower : public GameObject
 {
-private:
-
+	
+protected:
+	float ready;
+	bool used = false;
 	class GeometryNode* m_tower;
 	glm::mat4 m_transformation_matrix;
 	glm::mat4 m_transformation_matrix_normal;
 	glm::vec3 pos;
 
-	bool used = false;
-
 public:
-	Tower();
+	Tower(float ready);
 	virtual ~Tower();
 
 	static bool InitializeMeshes();
 
-	void SetPosition(glm::vec3 position);
-	void Update(Game* game) override;
-	void DrawGeometry(class Renderer* renderer) override;
-	void DrawGeometryToShadowMap(class Renderer* renderer) override;
-
-	void setUsed(bool used);
+	virtual void SetPosition(glm::vec3 position);
+	void SetUsed(bool used);
+	void update(Game* game) override;
+	void draw_geometry(class Renderer* renderer) override;
+	void draw_geometry_to_shadow_map(class Renderer* renderer) override;
 
 	bool IsUsed();
 	glm::vec3 GetPos();

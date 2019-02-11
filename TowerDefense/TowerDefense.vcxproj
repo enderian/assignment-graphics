@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CannonBall.cpp" />
+    <ClCompile Include="TreasureContainer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GeometricMesh.cpp" />
     <ClCompile Include="GeometryNode.cpp" />
@@ -36,10 +37,13 @@
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Tools.cpp" />
     <ClCompile Include="Tower.cpp" />
+    <ClCompile Include="TowerBB.cpp" />
+    <ClCompile Include="TowerMed.cpp" />
     <ClCompile Include="Treasure.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CannonBall.h" />
+    <ClInclude Include="TreasureContainer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GeometricMesh.h" />
     <ClInclude Include="GeometryNode.h" />
@@ -55,6 +59,8 @@
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Tools.h" />
     <ClInclude Include="Tower.h" />
+    <ClInclude Include="TowerBB.h" />
+    <ClInclude Include="TowerMed.h" />
     <ClInclude Include="Treasure.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -158,7 +164,7 @@ copy "$(SolutionDir)extras\bin\$(PlatformShortName)\*.dll" "$(OutDir)"</Command>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)extras\lib\$(PlatformName);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2_image.lib;glew32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2_image.lib;glew32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>echo copy "$(SolutionDir)extras\bin\$(PlatformShortName)\*.dll" "$(OutDir)"
@@ -210,7 +216,7 @@ copy "$(SolutionDir)extras\bin\$(PlatformShortName)\*.dll" "$(OutDir)"</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)extras\lib\$(PlatformName);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2_image.lib;glew32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2_image.lib;glew32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;freeglut.lib;winmm.lib%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>echo copy "$(SolutionDir)extras\bin\$(PlatformShortName)\*.dll" "$(OutDir)"

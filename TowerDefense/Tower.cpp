@@ -1,20 +1,13 @@
 #include "Tower.h"
+#include "Pirate.h"
 #include <glm/gtc/matrix_transform.inl>
 #include "OBJLoader.h"
+#include <iostream>
 
-GeometricMesh* m_tower_mesh;
-
-bool Tower::InitializeMeshes()
-{
-	OBJLoader loader;
-	m_tower_mesh = loader.load("../assets/MedievalTower/tower.obj");
-	return true;
-}
-
-Tower::Tower()
+Tower::Tower(float time)
 {
 	m_tower = new GeometryNode();
-	m_tower->Init(m_tower_mesh);
+	ready = time;
 }
 
 Tower::~Tower()
@@ -22,33 +15,28 @@ Tower::~Tower()
 	delete m_tower;
 }
 
+void Tower::draw_geometry(Renderer* renderer)
+{
+	renderer->draw_geometry_node(m_tower, m_transformation_matrix, m_transformation_matrix_normal);
+}
+
+void Tower::draw_geometry_to_shadow_map(Renderer* renderer)
+{
+	renderer->draw_geometry_node_to_shadow_map(m_tower, m_transformation_matrix, m_transformation_matrix_normal);
+}
+
 void Tower::SetPosition(glm::vec3 position)
 {
-	this->pos = position;
-	m_transformation_matrix = glm::translate(glm::mat4(1), position*glm::vec3(4));
-	m_transformation_matrix *= glm::scale(glm::mat4(1), glm::vec3(0.6));
-	m_transformation_matrix_normal = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_transformation_matrix))));
+	
 }
 
-void Tower::Update(Game* game)
+void Tower::update(Game* game)
 {
-	if(used)
-	{
-		
-	}
+
 }
 
-void Tower::DrawGeometry(Renderer* renderer)
-{
-	renderer->DrawGeometryNode(m_tower, m_transformation_matrix, m_transformation_matrix_normal);
-}
 
-void Tower::DrawGeometryToShadowMap(Renderer* renderer)
-{
-	renderer->DrawGeometryNodeToShadowMap(m_tower, m_transformation_matrix, m_transformation_matrix_normal);
-}
-
-void Tower::setUsed(bool used)
+void Tower::SetUsed(bool used)
 {
 	this->used = used;
 }
@@ -60,5 +48,5 @@ bool Tower::IsUsed()
 
 glm::vec3 Tower::GetPos()
 {
-	return pos;
+	return this->pos;
 }

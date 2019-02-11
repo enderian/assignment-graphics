@@ -7,6 +7,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "OBJLoader.h"
 #include "TextureManager.h"
+#include "GLEW/glew.h"
 
 // RENDERER
 Renderer::Renderer()
@@ -41,7 +42,7 @@ Renderer::~Renderer()
 	delete m_tower_object;
 }
 
-bool Renderer::Init(int SCREEN_WIDTH, int SCREEN_HEIGHT)
+bool Renderer::init(int SCREEN_WIDTH, int SCREEN_HEIGHT)
 {
 	this->m_screen_width = SCREEN_WIDTH;
 	this->m_screen_height = SCREEN_HEIGHT;
@@ -167,11 +168,11 @@ bool Renderer::InitRenderingTechniques()
 	m_spot_light_shadow_map_program.LoadUniform("uniform_projection_matrix");
 	m_spot_light_shadow_map_program.LoadUniform("uniform_view_matrix");
 	m_spot_light_shadow_map_program.LoadUniform("uniform_model_matrix");
-	
+
 	return initialized;
 }
 
-bool Renderer::ReloadShaders()
+bool Renderer::reload_shaders()
 {
 	bool reloaded = true;
 
@@ -191,11 +192,11 @@ bool Renderer::InitDeferredShaderBuffers()
 	// framebuffer to link everything together
 	glGenFramebuffers(1, &m_fbo);
 
-	return ResizeBuffers(m_screen_width, m_screen_height);
+	return resize_buffers(m_screen_width, m_screen_height);
 }
 
 // resize post processing textures and save the screen size
-bool Renderer::ResizeBuffers(int width, int height)
+bool Renderer::resize_buffers(int width, int height)
 {
 	m_screen_width = width;
 	m_screen_height = height;
@@ -244,6 +245,7 @@ bool Renderer::InitLightSources()
 	m_spotlight_node.SetColor(60.0f * glm::vec3(255, 255, 251) / 255.f);
 	m_spotlight_node.SetConeSize(73, 80);
 	m_spotlight_node.CastShadow(true);
+	//m_spotlight_node.CastShadow(false);
 
 	return true;
 }
@@ -266,16 +268,16 @@ bool Renderer::InitGeometricMeshes()
 	return initialized;
 }
 
-void Renderer::SetRenderingMode(RENDERING_MODE mode)
+void Renderer::set_rendering_mode(RENDERING_MODE mode)
 {
 	m_rendering_mode = mode;
 }
 
 // Render the Scene
-void Renderer::PostRender()
+void Renderer::post_render()
 {
 	// Render to screen
-	RenderToOuterRenderBuffer();
+	render_to_outer_render_buffer();
 
 	GLenum error = Tools::CheckGLError();
 	if (error != GL_NO_ERROR)
@@ -285,7 +287,7 @@ void Renderer::PostRender()
 	}
 }
 
-void Renderer::RenderShadowMaps(Renderable* renderable)
+void Renderer::render_shadow_maps(Renderable* renderable)
 {
 	// if the light source casts shadows
 	if (m_spotlight_node.GetCastShadowsStatus())
@@ -310,7 +312,7 @@ void Renderer::RenderShadowMaps(Renderable* renderable)
 		glUniformMatrix4fv(m_spot_light_shadow_map_program["uniform_view_matrix"], 1, GL_FALSE, glm::value_ptr(m_spotlight_node.GetViewMatrix()));
 
 		//Draw all the geometries passed
-		renderable->DrawGeometryToShadowMap(this);
+		renderable->draw_geometry_to_shadow_map(this);
 		
 		glBindVertexArray(0);
 
@@ -323,7 +325,7 @@ void Renderer::RenderShadowMaps(Renderable* renderable)
 }
 
 
-void Renderer::RenderGeometry(Renderable* renderable)
+void Renderer::render_geometry(Renderable* renderable)
 {
 	// Bind the Intermediate framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
@@ -383,7 +385,7 @@ void Renderer::RenderGeometry(Renderable* renderable)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Draw all the geometries passed
-	renderable->DrawGeometry(this);
+	renderable->draw_geometry(this);
 
 	glBindVertexArray(0);
 	m_geometry_rendering_program.Unbind();
@@ -396,7 +398,7 @@ void Renderer::RenderGeometry(Renderable* renderable)
 
 }
 
-void Renderer::DrawGeometryNode(GeometryNode* node, glm::mat4 model_matrix, glm::mat4 normal_matrix)
+void Renderer::draw_geometry_node(GeometryNode* node, glm::mat4 model_matrix, glm::mat4 normal_matrix)
 {
 	glBindVertexArray(node->m_vao);
 	glUniformMatrix4fv(m_geometry_rendering_program["uniform_model_matrix"], 1, GL_FALSE, glm::value_ptr(model_matrix));
@@ -416,7 +418,7 @@ void Renderer::DrawGeometryNode(GeometryNode* node, glm::mat4 model_matrix, glm:
 	}
 }
 
-void Renderer::DrawGeometryNodeToShadowMap(GeometryNode* node, glm::mat4 model_matrix, glm::mat4 normal_matrix)
+void Renderer::draw_geometry_node_to_shadow_map(GeometryNode* node, glm::mat4 model_matrix, glm::mat4 normal_matrix)
 {
 	glBindVertexArray(node->m_vao);
 	glUniformMatrix4fv(m_spot_light_shadow_map_program["uniform_model_matrix"], 1, GL_FALSE, glm::value_ptr(model_matrix));
@@ -426,7 +428,7 @@ void Renderer::DrawGeometryNodeToShadowMap(GeometryNode* node, glm::mat4 model_m
 	}
 }
 
-void Renderer::RenderToOuterRenderBuffer()
+void Renderer::render_to_outer_render_buffer()
 {
 	// Bind the default framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -462,27 +464,4 @@ void Renderer::RenderToOuterRenderBuffer()
 
 	// Unbind the post processing program
 	m_postprocess_program.Unbind();
-}
-
-void Renderer::CameraMoveForward(bool enable)
-{
-	m_camera_movement.x = (enable)? 1 : 0;
-}
-void Renderer::CameraMoveBackWard(bool enable)
-{
-	m_camera_movement.x = (enable) ? -1 : 0;
-}
-
-void Renderer::CameraMoveLeft(bool enable)
-{
-	m_camera_movement.y = (enable) ? -1 : 0;
-}
-void Renderer::CameraMoveRight(bool enable)
-{
-	m_camera_movement.y = (enable) ? 1 : 0;
-}
-
-void Renderer::CameraLook(glm::vec2 lookDir)
-{
-	m_camera_look_angle_destination = glm::vec2(1, -1) * lookDir;
 }

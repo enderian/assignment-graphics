@@ -30,16 +30,16 @@ void Road::SetPosition(glm::vec3 position)
 	m_transformation_matrix_normal = glm::mat4(glm::transpose(glm::inverse(glm::mat3(m_transformation_matrix))));
 }
 
-void Road::Update(Game* game)
+void Road::update(Game* game)
 {
 }
 
-void Road::DrawGeometry(Renderer* renderer)
+void Road::draw_geometry(Renderer* renderer)
 {
-	renderer->DrawGeometryNode(m_road, m_transformation_matrix, m_transformation_matrix_normal);
+	renderer->draw_geometry_node(m_road, m_transformation_matrix, m_transformation_matrix_normal);
 }
 
-void Road::DrawGeometryToShadowMap(Renderer* renderer)
+void Road::draw_geometry_to_shadow_map(Renderer* renderer)
 {
-	renderer->DrawGeometryNodeToShadowMap(m_road, m_transformation_matrix, m_transformation_matrix_normal);
+	renderer->draw_geometry_node_to_shadow_map(m_road, m_transformation_matrix, m_transformation_matrix_normal);
 }

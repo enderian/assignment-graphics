@@ -6,12 +6,15 @@
 #include "Renderer.h"
 #include "Game.h"
 #include "PlaneRG.h"
+#include <thread>
 
 using namespace std;
 
+#ifdef nvidia
 extern "C" {
 	_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
 }
+#endif
 
 //Screen attributes
 SDL_Window * window;
@@ -25,6 +28,8 @@ const int SCREEN_HEIGHT = 1024;	//600;	//480;
 SDL_Event event;
 
 Game * game = nullptr;
+
+bool over = false;
 
 void func()
 {
@@ -79,10 +84,8 @@ bool init()
 	glGetError();
 
 	game = new Game();
-	bool engine_initialized = game->InitializeRenderer(SCREEN_WIDTH, SCREEN_HEIGHT);
-	engine_initialized |= game->InitializeObjects();
-
-	//atexit(func);
+	bool engine_initialized = game->initialize_renderer(SCREEN_WIDTH, SCREEN_HEIGHT);
+	engine_initialized |= game->initialize_objects();
 	
 	return engine_initialized;
 }
@@ -117,8 +120,8 @@ int main(int argc, char *argv[])
 	float start_of_towers = game->time();
 	float start_of_additions = game->time();
 	boolean allowed = false;
+	int remaining = 0, init_time = game->time();
 	double passed;
-
 	// Wait for user exit
 	while (quit == false)
 	{
@@ -132,126 +135,90 @@ int main(int argc, char *argv[])
 			else if (event.type == SDL_KEYDOWN)
 			{
 				// Key down events
-				if (event.key.keysym.sym == SDLK_ESCAPE) quit = true;
-				//else if (event.key.keysym.sym == SDLK_r) game->renderer()->ReloadShaders();
-				//else if (event.key.keysym.sym == SDLK_t) game->renderer()->SetRenderingMode(Renderer::RENDERING_MODE::TRIANGLES);
-				else if (event.key.keysym.sym == SDLK_l) game->renderer()->SetRenderingMode(Renderer::RENDERING_MODE::LINES);
-				else if (event.key.keysym.sym == SDLK_p) game->renderer()->SetRenderingMode(Renderer::RENDERING_MODE::POINTS);
+				if (event.key.keysym.sym == SDLK_ESCAPE)
+				{
+					quit = true;
+				}
 				else if (event.key.keysym.sym == SDLK_UP)
 				{
-					game->getPlaneRG()->moveUp();
+					game->get_plane_rg()->moveUp();
 				}
 				else if (event.key.keysym.sym == SDLK_DOWN)
 				{
-					game->getPlaneRG()->moveDown();
+					game->get_plane_rg()->moveDown();
 				}	
 				else if (event.key.keysym.sym == SDLK_LEFT)
 				{
-					game->getPlaneRG()->moveLeft();
+					game->get_plane_rg()->moveLeft();
 				}
 				else if (event.key.keysym.sym == SDLK_RIGHT)
 				{
-					game->getPlaneRG()->moveRight();
+					game->get_plane_rg()->moveRight();
 				}
 				else if (event.key.keysym.sym == SDLK_r)
 				{
 					if(allowed)
 					{
-						glm::vec4 place = game->getPlaneRG()->getPos();
-						bool res = game->RemoveTower(glm::vec3(place.x, place.y, place.z));
+						glm::vec4 place = game->get_plane_rg()->getPos();
+						bool res = game->remove_tower(glm::vec3(place.x, place.y, place.z));
 						if (res) allowed = false;
 					}
 				}
 				else if (event.key.keysym.sym == SDLK_t)
 				{
-					glm::vec4 place = game->getPlaneRG()->getPos();
+					glm::vec4 place = game->get_plane_rg()->getPos();
 					if(place.w)
 					{
-						game->DeployTower(glm::vec3(place.x, place.y, place.z));
-						//if (!res) allowed = false;
+						game->deploy_tower(glm::vec3(place.x, place.y, place.z));
 					}
 				}
-			}
-			else if (event.type == SDL_KEYUP)
-			{
-				if (event.key.keysym.sym == SDLK_w || event.key.keysym.sym == SDLK_UP)
+				else if (event.key.keysym.sym == SDLK_y)
 				{
-					game->renderer()->CameraMoveForward(false);
+					glm::vec4 place = game->get_plane_rg()->getPos();
+					if (place.w)
+					{
+						game->deploy_tower_bb(glm::vec3(place.x, place.y, place.z));
+					}
 				}
-				else if (event.key.keysym.sym == SDLK_s || event.key.keysym.sym == SDLK_DOWN)
-				{
-					game->renderer()->CameraMoveBackWard(false);
-				}
-				else if (event.key.keysym.sym == SDLK_a || event.key.keysym.sym == SDLK_LEFT)
-				{
-					game->renderer()->CameraMoveLeft(false);
-				}
-				else if (event.key.keysym.sym == SDLK_d || event.key.keysym.sym == SDLK_RIGHT)
-				{
-					game->renderer()->CameraMoveRight(false);
-				}
-			}
-			else if (event.type == SDL_MOUSEMOTION)
-			{
-				int x = event.motion.x;
-				int y = event.motion.y;
-				if (mouse_button_pressed)
-				{
-					game->renderer()->CameraLook(glm::vec2(x, y) - prev_mouse_position);
-					prev_mouse_position = glm::vec2(x, y);
-				}
-			}
-			else if (event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP)
-			{
-				if (event.button.button == SDL_BUTTON_LEFT)
-				{
-					int x = event.button.x;
-					int y = event.button.y;
-					mouse_button_pressed = (event.type == SDL_MOUSEBUTTONDOWN);
-					prev_mouse_position = glm::vec2(x, y);
-				}
-			}
-			else if (event.type == SDL_MOUSEWHEEL)
-			{
-				int x = event.wheel.x;
-				int y = event.wheel.y;
 			}
 			else if (event.type == SDL_WINDOWEVENT)
 			{
 				if (event.window.event == SDL_WINDOWEVENT_RESIZED)
 				{
-					game->renderer()->ResizeBuffers(event.window.data1, event.window.data2);
+					game->renderer()->resize_buffers(event.window.data1, event.window.data2);
 				}
 			}
 		}
-		
-		// Compute the ellapsed time
+		// Compute the elapsed time
 		auto simulation_end = chrono::steady_clock::now();
 		float dt = chrono::duration <float>(simulation_end - simulation_start).count(); // in seconds
 		simulation_start = chrono::steady_clock::now();
 
-		passed = (game->time() - start_of_spawns);
-		if(passed >= 20)
-		{
-			game->SpawnPirate(game->time());
-			start_of_spawns = game->time();
-		}
+		if (!game->get_game_over()) {
+			passed = (game->time() - start_of_spawns);
+			if (passed >= 10 - (9 * (game->time() / 300.0f)) - rand() % 2)
+			{
+				remaining = rand() % 10 + 1;
+				init_time = game->time();
+				game->spawn_pirate(game->time());
+				start_of_spawns = game->time();
+			}
+			if ((game->time() - start_of_towers) >= 30)
+			{
+				allowed = true;
+				start_of_towers = game->time();
+			}
 
-		if((game->time() - start_of_towers) >= 30)
-		{
-			allowed = true;
-			start_of_towers = game->time();
-		}
-
-		if((game->time() - start_of_additions) >= 120)
-		{
-			game->AddTower();
-			start_of_additions = game->time();
+			if ((game->time() - start_of_additions) >= 120)
+			{
+				game->add_tower();
+				start_of_additions = game->time();
+			}
 		}
 
 		// Update
-		game->Update(dt);
-		game->Render();
+		game->update(dt);
+		game->render();
 		
 		//Update screen (swap buffer for double buffering)
 		SDL_GL_SwapWindow(window);

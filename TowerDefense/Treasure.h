@@ -2,6 +2,7 @@
 #define TREASURE_H
 
 #include "GeometryNode.h"
+#include "Pirate.h"
 #include "Renderer.h"
 #include "Game.h"
 
@@ -14,16 +15,15 @@ private:
 	glm::mat4 m_transformation_matrix_normal;
 
 public:
-	int coins = 100;
 	Treasure();
 	virtual ~Treasure();
 
 	static bool InitializeMeshes();
 
 	void SetPosition(glm::vec3 position);
-	void Update(Game* game) override;
-	void DrawGeometry(class Renderer* renderer) override;
-	void DrawGeometryToShadowMap(class Renderer* renderer) override;
+	void update(Game* game) override;
+	void draw_geometry(class Renderer* renderer) override;
+	void draw_geometry_to_shadow_map(class Renderer* renderer) override;
 
 };
 
